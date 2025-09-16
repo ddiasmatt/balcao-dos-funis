@@ -16,12 +16,12 @@ services:
         - "traefik.enable=true"
         
         # HTTP router
-        - "traefik.http.routers.balcao.rule=Host(`balcao.ltvtribe.com.br`)"
+        - "traefik.http.routers.balcao.rule=Host(`app.ltvtribe.com.br`)"
         - "traefik.http.routers.balcao.entrypoints=web"
         - "traefik.http.routers.balcao.middlewares=redirect-to-https"
         
         # HTTPS router
-        - "traefik.http.routers.balcao-secure.rule=Host(`balcao.ltvtribe.com.br`)"
+        - "traefik.http.routers.balcao-secure.rule=Host(`app.ltvtribe.com.br`)"
         - "traefik.http.routers.balcao-secure.entrypoints=websecure"
         - "traefik.http.routers.balcao-secure.tls=true"
         - "traefik.http.routers.balcao-secure.tls.certresolver=letsencryptresolver"
@@ -35,7 +35,7 @@ services:
         
         # Security headers middleware
         - "traefik.http.middlewares.secure-headers.headers.accesscontrolallowmethods=GET,OPTIONS,PUT,POST,DELETE,PATCH"
-        - "traefik.http.middlewares.secure-headers.headers.accesscontrolalloworiginlist=https://balcao.ltvtribe.com.br"
+        - "traefik.http.middlewares.secure-headers.headers.accesscontrolalloworiginlist=https://app.ltvtribe.com.br"
         - "traefik.http.middlewares.secure-headers.headers.accesscontrolmaxage=100"
         - "traefik.http.middlewares.secure-headers.headers.addvaryheader=true"
         - "traefik.http.middlewares.secure-headers.headers.referrer-policy=strict-origin-when-cross-origin"
