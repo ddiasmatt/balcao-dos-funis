@@ -43,7 +43,15 @@ export const OpportunityModal = ({ opportunity, isOpen, onClose }: OpportunityMo
     const message = encodeURIComponent(
       `Olá ${opportunity.nome}! Vim através do Balcão dos Funis - LTV Tribe e tenho interesse em ajudar com seu projeto. Podemos conversar?`
     );
-    window.open(`https://wa.me/${opportunity.whatsapp_public.replace(/\D/g, '')}?text=${message}`, '_blank');
+    // Remove todos os caracteres não numéricos e garante que tenha o código do país
+    let phoneNumber = opportunity.whatsapp_public.replace(/\D/g, '');
+    
+    // Se não começar com 55 (código do Brasil), adiciona
+    if (!phoneNumber.startsWith('55')) {
+      phoneNumber = '55' + phoneNumber;
+    }
+    
+    window.open(`https://wa.me/${phoneNumber}?text=${message}`, '_blank');
   };
 
   const handleEmailClick = () => {
