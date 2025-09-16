@@ -44,15 +44,19 @@ const Dashboard = () => {
           .select('*')
           .order('created_at', { ascending: false });
 
+        console.log('Supabase response:', { data, error });
+
         if (error) {
           console.error('Error fetching opportunities:', error);
           return;
         }
 
         if (data) {
+          console.log('Setting opportunities:', data);
           setOpportunities(data);
           // Extract unique nichos from the data
           const uniqueNichos = ['Todos', ...new Set(data.map(item => item.nicho))];
+          console.log('Setting nichos:', uniqueNichos);
           setNichos(uniqueNichos);
         }
       } catch (error) {
@@ -67,7 +71,9 @@ const Dashboard = () => {
 
   // Filtrar oportunidades
   const filteredOpportunities = useMemo(() => {
-    return opportunities.filter(opportunity => {
+    console.log('Filtering opportunities:', { opportunities, searchTerm, selectedNicho });
+    
+    const filtered = opportunities.filter(opportunity => {
       const matchesSearch = 
         opportunity.nome.toLowerCase().includes(searchTerm.toLowerCase()) ||
         opportunity.instagram.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -77,7 +83,10 @@ const Dashboard = () => {
       
       return matchesSearch && matchesNicho;
     });
-  }, [searchTerm, selectedNicho]);
+    
+    console.log('Filtered opportunities:', filtered);
+    return filtered;
+  }, [opportunities, searchTerm, selectedNicho]);
 
   const handleCardClick = (opportunity: Opportunity) => {
     setSelectedOpportunity(opportunity);
