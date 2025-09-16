@@ -51,8 +51,8 @@ export const OpportunityModal = ({ opportunity, isOpen, onClose }: OpportunityMo
       phoneNumber = '55' + phoneNumber;
     }
     
-    // Usar o formato mais simples do wa.me
-    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
+    // Usar o formato correto da WhatsApp API
+    const whatsappUrl = `https://api.whatsapp.com/send?phone=${phoneNumber}&text=${message}`;
     console.log('WhatsApp URL:', whatsappUrl); // Para debug
     window.open(whatsappUrl, '_blank');
   };
