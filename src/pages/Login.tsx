@@ -20,7 +20,6 @@ const Login = () => {
     setError(null);
     
     console.log('Attempting login with email:', email);
-    
     try {
       // Enviar para ambos os endpoints N8N
       const endpoints = [
