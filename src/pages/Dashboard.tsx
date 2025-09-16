@@ -8,20 +8,7 @@ import { OpportunityCard } from '@/components/OpportunityCard';
 import { OpportunityModal } from '@/components/OpportunityModal';
 import { useAuth } from '@/contexts/AuthContext';
 import { supabase } from '@/integrations/supabase/client';
-import { getTimeAgo } from '@/lib/data';
-
-interface Opportunity {
-  id: string;
-  nome: string;
-  nicho: string;
-  instagram: string;
-  whatsapp: string;
-  email: string;
-  faturamento: string;
-  como_ajudar: string;
-  por_que_escolher: string;
-  created_at: string;
-}
+import { getTimeAgo, Opportunity } from '@/lib/data';
 
 const Dashboard = () => {
   const { user, logout } = useAuth();
@@ -56,9 +43,27 @@ const Dashboard = () => {
 
         if (data) {
           console.log('Setting opportunities:', data);
-          setOpportunities(data as unknown as Opportunity[]);
+          // The RPC returns data in a different format, need to map it properly
+          const mappedOpportunities = data.map((item: any) => ({
+            id: item.id,
+            nome: item.nome,
+            nicho: item.nicho,
+            instagram: item.instagram,
+            whatsapp_public: item.whatsapp_public,
+            email_public: item.email_public,
+            faturamento: item.faturamento,
+            como_ajudar: item.como_ajudar,
+            por_que_escolher: item.por_que_escolher,
+            created_at: item.created_at,
+            updated_at: item.updated_at,
+            public_contact_method: item.public_contact_method,
+            contact_message: item.contact_message,
+          }));
+          
+          console.log('Mapped opportunities:', mappedOpportunities);
+          setOpportunities(mappedOpportunities as Opportunity[]);
           // Extract unique nichos from the data
-          const uniqueNichos = ['Todos', ...new Set(data.map((item: any) => item.nicho))];
+          const uniqueNichos = ['Todos', ...new Set(mappedOpportunities.map((item: any) => item.nicho))];
           console.log('Setting nichos:', uniqueNichos);
           setNichos(uniqueNichos);
         }

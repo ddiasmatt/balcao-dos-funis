@@ -4,8 +4,8 @@ export interface Opportunity {
   nome: string;
   nicho: string;
   instagram: string;
-  whatsapp_public: string;  // Ofuscated contact info for marketplace
-  email_public: string;     // Ofuscated contact info for marketplace
+  whatsapp_public: string;  // Obfuscated contact info for marketplace
+  email_public: string;     // Obfuscated contact info for marketplace
   faturamento: string;
   como_ajudar: string;
   por_que_escolher: string;
@@ -19,8 +19,8 @@ export interface Opportunity {
 export interface FullOpportunity extends Opportunity {
   whatsapp: string;         // Full contact info (own data only)
   email: string;            // Full contact info (own data only)
-  user_id: string;
-  show_full_contact: boolean;
+  user_id?: string;
+  show_full_contact?: boolean;
 }
 
 // Mock data removido - dados agora vêm do Supabase via RPC
