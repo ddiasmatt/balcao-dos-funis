@@ -43,10 +43,15 @@ const Login = () => {
       
       for (const response of responses) {
         if (response.ok) {
-          const data = await response.text();
-          if (data === "true") {
-            isAuthenticated = true;
-            break;
+          try {
+            const data = await response.json();
+            if (data.status === "true") {
+              isAuthenticated = true;
+              break;
+            }
+          } catch (error) {
+            // Se não conseguir fazer parse do JSON, considera como falha
+            console.error('Erro ao processar resposta:', error);
           }
         }
       }
