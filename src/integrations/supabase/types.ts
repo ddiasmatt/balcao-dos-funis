@@ -29,7 +29,6 @@ export type Database = {
           public_contact_method: string | null
           show_full_contact: boolean | null
           updated_at: string
-          user_id: string
           whatsapp: string
         }
         Insert: {
@@ -46,7 +45,6 @@ export type Database = {
           public_contact_method?: string | null
           show_full_contact?: boolean | null
           updated_at?: string
-          user_id: string
           whatsapp: string
         }
         Update: {
@@ -63,7 +61,6 @@ export type Database = {
           public_contact_method?: string | null
           show_full_contact?: boolean | null
           updated_at?: string
-          user_id?: string
           whatsapp?: string
         }
         Relationships: []
