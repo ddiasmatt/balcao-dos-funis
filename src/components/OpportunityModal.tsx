@@ -1,6 +1,7 @@
 import { X, Instagram, DollarSign, MessageCircle, Mail, Phone, Target, Star } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Opportunity } from '@/lib/data';
+import { useEffect } from 'react';
 
 interface OpportunityModalProps {
   opportunity: Opportunity | null;
@@ -9,6 +10,22 @@ interface OpportunityModalProps {
 }
 
 export const OpportunityModal = ({ opportunity, isOpen, onClose }: OpportunityModalProps) => {
+  useEffect(() => {
+    const handleEscapeKey = (event: KeyboardEvent) => {
+      if (event.key === 'Escape') {
+        onClose();
+      }
+    };
+
+    if (isOpen) {
+      document.addEventListener('keydown', handleEscapeKey);
+    }
+
+    return () => {
+      document.removeEventListener('keydown', handleEscapeKey);
+    };
+  }, [isOpen, onClose]);
+
   if (!isOpen || !opportunity) return null;
 
   const getNichoBadgeColor = (nicho: string) => {
