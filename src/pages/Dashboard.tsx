@@ -55,7 +55,7 @@ const Dashboard = () => {
             </div>
             <div>
               <h1 className="text-xl font-bold text-foreground">BALCÃO DOS FUNIS</h1>
-              <p className="text-sm ltv-text-orange font-semibold">MÉTODO LTV</p>
+              <p className="text-sm ltv-text-orange font-semibold">LTV TRIBE</p>
             </div>
           </div>
 
@@ -102,7 +102,7 @@ const Dashboard = () => {
                   <SelectValue placeholder="Filtrar por nicho" />
                 </div>
               </SelectTrigger>
-              <SelectContent>
+              <SelectContent className="z-50">
                 {nichos.map((nicho) => (
                   <SelectItem key={nicho} value={nicho}>
                     {nicho}

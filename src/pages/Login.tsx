@@ -42,7 +42,7 @@ const Login = () => {
             <span className="text-foreground">DOS FUNIS</span>
           </h1>
           <h2 className="ltv-subtitle ltv-text-orange">
-            MÉTODO LTV
+            LTV TRIBE
           </h2>
         </div>
 
@@ -94,7 +94,7 @@ const Login = () => {
               ✨ Acesso exclusivo para
             </p>
             <p className="ltv-small ltv-text-gray italic">
-              alunos LTV Tribe
+              membros LTV Tribe
             </p>
           </div>
         </div>
@@ -102,7 +102,7 @@ const Login = () => {
         {/* Footer */}
         <div className="text-center mt-8">
           <p className="text-xs ltv-text-gray">
-            © 2025 Método LTV - Todos os direitos reservados
+            © 2025 LTV Tribe - Todos os direitos reservados
           </p>
         </div>
       </div>

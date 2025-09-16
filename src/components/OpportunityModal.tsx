@@ -24,7 +24,7 @@ export const OpportunityModal = ({ opportunity, isOpen, onClose }: OpportunityMo
 
   const handleWhatsAppClick = () => {
     const message = encodeURIComponent(
-      `Olá ${opportunity.nome}! Vim através do Balcão dos Funis - Método LTV e tenho interesse em ajudar com seu projeto. Podemos conversar?`
+      `Olá ${opportunity.nome}! Vim através do Balcão dos Funis - LTV Tribe e tenho interesse em ajudar com seu projeto. Podemos conversar?`
     );
     window.open(`https://wa.me/${opportunity.whatsapp.replace(/\D/g, '')}?text=${message}`, '_blank');
   };
@@ -32,7 +32,7 @@ export const OpportunityModal = ({ opportunity, isOpen, onClose }: OpportunityMo
   const handleEmailClick = () => {
     const subject = encodeURIComponent(`Oportunidade via Balcão dos Funis - ${opportunity.nome}`);
     const body = encodeURIComponent(
-      `Olá ${opportunity.nome}!\n\nVim através do Balcão dos Funis - Método LTV e tenho interesse em ajudar com seu projeto.\n\nGostaria de agendar uma conversa para entendermos melhor como posso contribuir.\n\nAguardo seu retorno!\n\nAtenciosamente`
+      `Olá ${opportunity.nome}!\n\nVim através do Balcão dos Funis - LTV Tribe e tenho interesse em ajudar com seu projeto.\n\nGostaria de agendar uma conversa para entendermos melhor como posso contribuir.\n\nAguardo seu retorno!\n\nAtenciosamente`
     );
     window.open(`mailto:${opportunity.email}?subject=${subject}&body=${body}`, '_blank');
   };
