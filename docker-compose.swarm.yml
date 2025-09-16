@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  balcao-dos-funis:
+    image: ghcr.io/ddiasmatt/balcao-dos-funis:main
+    networks:
+      - traefik
+    deploy:
+      replicas: 1
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+      labels:
+        # Enable Traefik
+        - "traefik.enable=true"
+        
+        # HTTP router
+        - "traefik.http.routers.balcao.rule=Host(`balcao.ltvtribe.com.br`)"
+        - "traefik.http.routers.balcao.entrypoints=web"
+        - "traefik.http.routers.balcao.middlewares=redirect-to-https"
+        
+        # HTTPS router
+        - "traefik.http.routers.balcao-secure.rule=Host(`balcao.ltvtribe.com.br`)"
+        - "traefik.http.routers.balcao-secure.entrypoints=websecure"
+        - "traefik.http.routers.balcao-secure.tls=true"
+        - "traefik.http.routers.balcao-secure.tls.certresolver=letsencrypt"
+        
+        # Service
+        - "traefik.http.services.balcao.loadbalancer.server.port=80"
+        
+        # Middleware for HTTPS redirect
+        - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+        - "traefik.http.middlewares.redirect-to-https.redirectscheme.permanent=true"
+        
+        # Security headers middleware
+        - "traefik.http.middlewares.secure-headers.headers.accesscontrolallowmethods=GET,OPTIONS,PUT,POST,DELETE,PATCH"
+        - "traefik.http.middlewares.secure-headers.headers.accesscontrolalloworiginlist=https://balcao.ltvtribe.com.br"
+        - "traefik.http.middlewares.secure-headers.headers.accesscontrolmaxage=100"
+        - "traefik.http.middlewares.secure-headers.headers.addvaryheader=true"
+        - "traefik.http.middlewares.secure-headers.headers.referrer-policy=strict-origin-when-cross-origin"
+        - "traefik.http.middlewares.secure-headers.headers.hostsproxyheaders=X-Forwarded-Host"
+        - "traefik.http.middlewares.secure-headers.headers.customrequestheaders.X-Forwarded-Proto=https"
+        
+        # Apply security headers to HTTPS router
+        - "traefik.http.routers.balcao-secure.middlewares=secure-headers"
+
+networks:
+  traefik:
+    external: true

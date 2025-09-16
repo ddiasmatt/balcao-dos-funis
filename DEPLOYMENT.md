@@ -31,7 +31,9 @@ Configurado com:
 
 ## Deploy no Contabo
 
-### Passo 1: Preparar o ambiente
+### Opção 1: Deploy via CLI (Docker Compose Standalone)
+
+#### Passo 1: Preparar o ambiente
 ```bash
 # Conectar na VPS
 ssh root@seu-ip-contabo
@@ -41,7 +43,7 @@ mkdir -p /opt/balcao-dos-funis
 cd /opt/balcao-dos-funis
 ```
 
-### Passo 2: Clonar o repositório
+#### Passo 2: Clonar o repositório
 ```bash
 # Clonar via HTTPS
 git clone https://github.com/ddiasmatt/balcao-dos-funis.git .
@@ -50,7 +52,7 @@ git clone https://github.com/ddiasmatt/balcao-dos-funis.git .
 git clone git@github.com:ddiasmatt/balcao-dos-funis.git .
 ```
 
-### Passo 3: Configurar variáveis de ambiente
+#### Passo 3: Configurar variáveis de ambiente
 ```bash
 # Copiar arquivo de produção
 cp .env.production .env
@@ -59,7 +61,7 @@ cp .env.production .env
 nano .env
 ```
 
-### Passo 4: Deploy via Docker Compose
+#### Passo 4: Deploy via Docker Compose
 ```bash
 # Build e start dos containers
 docker-compose up -d --build
@@ -68,10 +70,59 @@ docker-compose up -d --build
 docker-compose logs -f balcao-dos-funis
 ```
 
-### Passo 5: Verificar no Portainer
+### Opção 2: Deploy via Portainer (Docker Swarm) - Método Git Repository
+
+#### Passo 1: Preparar VPS e Configurar GitHub Registry
+```bash
+# Conectar na VPS
+ssh root@seu-ip-contabo
+
+# Verificar se rede traefik existe no Swarm
+docker network ls | grep traefik
+
+# Se não existir, criar rede traefik no Swarm
+docker network create --driver overlay traefik
+
+# Fazer login no GitHub Container Registry
+# (use um Personal Access Token com permissão packages:read)
+echo "SEU_GITHUB_TOKEN" | docker login ghcr.io -u SEU_USUARIO --password-stdin
+```
+
+**Importante**: A imagem Docker será construída automaticamente pelo GitHub Actions e disponibilizada em `ghcr.io/ddiasmatt/balcao-dos-funis:main`
+
+#### Passo 2: Deploy via Portainer Web UI
+1. Acesse `https://portainer.ltvtribe.com.br`
+2. Faça login com suas credenciais
+3. Clique em **"Stacks"** no menu lateral
+4. Clique em **"Add stack"**
+5. Nome do stack: `balcao-dos-funis`
+
+#### Passo 3: Configurar Git Repository
+1. Selecione **"Git repository"**
+2. **Repository URL**: `https://github.com/ddiasmatt/balcao-dos-funis`
+3. **Reference**: `refs/heads/main`
+4. **Compose path**: `docker-compose.swarm.yml`
+5. **Auto-update**: Deixe desmarcado (ou configure conforme necessário)
+
+#### Passo 4: Configurar Environment Variables
+Na seção **"Environment variables"**, adicione:
+- **Nome**: `VITE_SUPABASE_URL` → **Valor**: `https://db.ltvtribe.com.br`
+- **Nome**: `VITE_SUPABASE_PUBLISHABLE_KEY` → **Valor**: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...`
+
+#### Passo 5: Deploy
+1. Clique em **"Deploy the stack"**
+2. Aguarde o download da imagem e deploy (alguns minutos na primeira vez)
+3. Monitore logs na interface do Portainer
+
+**Nota**: Se der erro de imagem não encontrada, certifique-se de que:
+- O GitHub Actions executou com sucesso (check na aba Actions do repositório)
+- A imagem foi publicada em `ghcr.io/ddiasmatt/balcao-dos-funis:main`
+- O login no registry foi feito na VPS
+
+### Passo 6: Verificar no Portainer
 1. Acesse o Portainer da VPS
-2. Vá em "Containers"
-3. Verifique se o container `balcao-dos-funis` está rodando
+2. Vá em "Containers" ou "Services" (para Swarm)
+3. Verifique se o container/service `balcao-dos-funis` está rodando
 4. Monitore logs e recursos
 
 ## Verificação do Deploy
@@ -99,6 +150,8 @@ curl -I https://balcao.ltvtribe.com.br
 ## Atualizações
 
 ### Deploy de nova versão
+
+**Via Docker Compose (CLI):**
 ```bash
 cd /opt/balcao-dos-funis
 
@@ -109,6 +162,16 @@ git pull origin main
 docker-compose down
 docker-compose up -d --build
 ```
+
+**Via Portainer (Swarm) - Método Git Repository:**
+No Portainer:
+1. Vá em **"Stacks"**
+2. Clique no stack **"balcao-dos-funis"**  
+3. Clique **"Update the stack"**
+4. Clique **"Pull and redeploy"** (para puxar as últimas mudanças do Git)
+5. Clique **"Update"**
+
+Obs: O Portainer automaticamente fará o pull do repositório Git e rebuild da aplicação.
 
 ### Rollback rápido
 ```bash
