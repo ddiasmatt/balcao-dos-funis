@@ -1,0 +1,191 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* BALCÃO DOS FUNIS - MÉTODO LTV DESIGN SYSTEM */
+/* All colors MUST be HSL for perfect theme compatibility */
+
+@layer base {
+  :root {
+    /* LTV Brand Colors */
+    --ltv-orange: 18 100% 60%;           /* #FF6B35 */
+    --ltv-orange-dark: 18 100% 52%;      /* Hover state */
+    --ltv-orange-light: 18 100% 95%;     /* Subtle backgrounds */
+    --ltv-black: 0 0% 10%;               /* #1A1A1A */
+    --ltv-gray-dark: 0 0% 18%;           /* #2D2D2D */
+    --ltv-gray-medium: 210 9% 42%;       /* #6C757D */
+    --ltv-gray-light: 210 17% 97%;       /* #F8F9FA */
+    
+    /* Core System Colors */
+    --background: 0 0% 100%;
+    --foreground: 0 0% 10%;
+    
+    --card: 0 0% 100%;
+    --card-foreground: 0 0% 10%;
+    
+    --primary: 18 100% 60%;              /* LTV Orange */
+    --primary-foreground: 0 0% 100%;
+    
+    --secondary: 210 17% 97%;            /* Light gray */
+    --secondary-foreground: 0 0% 10%;
+    
+    --muted: 210 17% 97%;
+    --muted-foreground: 210 9% 42%;
+    
+    --accent: 18 100% 95%;               /* Light orange */
+    --accent-foreground: 0 0% 10%;
+    
+    --destructive: 0 84% 60%;
+    --destructive-foreground: 0 0% 100%;
+    
+    --border: 214 32% 91%;
+    --input: 214 32% 91%;
+    --ring: 18 100% 60%;
+    
+    --radius: 0.75rem;
+    
+    /* LTV Specific Gradients */
+    --gradient-orange: linear-gradient(135deg, hsl(var(--ltv-orange)), hsl(var(--ltv-orange-dark)));
+    --gradient-subtle: linear-gradient(180deg, hsl(var(--ltv-gray-light)), hsl(var(--background)));
+    --gradient-hero: linear-gradient(135deg, hsl(var(--ltv-orange)) 0%, hsl(var(--ltv-orange-dark)) 100%);
+    
+    /* Shadows */
+    --shadow-card: 0 4px 6px -1px hsl(var(--ltv-black) / 0.1);
+    --shadow-card-hover: 0 10px 25px -3px hsl(var(--ltv-black) / 0.15);
+    --shadow-modal: 0 25px 50px -12px hsl(var(--ltv-black) / 0.25);
+    
+    /* Transitions */
+    --transition-smooth: all 0.2s ease;
+    --transition-card: transform 0.2s ease, box-shadow 0.2s ease;
+
+    --sidebar-background: 0 0% 98%;
+
+    --sidebar-foreground: 240 5.3% 26.1%;
+
+    --sidebar-primary: 240 5.9% 10%;
+
+    --sidebar-primary-foreground: 0 0% 98%;
+
+    --sidebar-accent: 240 4.8% 95.9%;
+
+    --sidebar-accent-foreground: 240 5.9% 10%;
+
+    --sidebar-border: 220 13% 91%;
+
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+
+  .dark {
+    --background: 222.2 84% 4.9%;
+    --foreground: 210 40% 98%;
+
+    --card: 222.2 84% 4.9%;
+    --card-foreground: 210 40% 98%;
+
+    --popover: 222.2 84% 4.9%;
+    --popover-foreground: 210 40% 98%;
+
+    --primary: 210 40% 98%;
+    --primary-foreground: 222.2 47.4% 11.2%;
+
+    --secondary: 217.2 32.6% 17.5%;
+    --secondary-foreground: 210 40% 98%;
+
+    --muted: 217.2 32.6% 17.5%;
+    --muted-foreground: 215 20.2% 65.1%;
+
+    --accent: 217.2 32.6% 17.5%;
+    --accent-foreground: 210 40% 98%;
+
+    --destructive: 0 62.8% 30.6%;
+    --destructive-foreground: 210 40% 98%;
+
+    --border: 217.2 32.6% 17.5%;
+    --input: 217.2 32.6% 17.5%;
+    --ring: 212.7 26.8% 83.9%;
+    --sidebar-background: 240 5.9% 10%;
+    --sidebar-foreground: 240 4.8% 95.9%;
+    --sidebar-primary: 224.3 76.3% 48%;
+    --sidebar-primary-foreground: 0 0% 100%;
+    --sidebar-accent: 240 3.7% 15.9%;
+    --sidebar-accent-foreground: 240 4.8% 95.9%;
+    --sidebar-border: 240 3.7% 15.9%;
+    --sidebar-ring: 217.2 91.2% 59.8%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: 'Inter', sans-serif;
+  }
+}
+
+@layer components {
+  /* LTV Custom Components */
+  .ltv-gradient {
+    background: var(--gradient-orange);
+  }
+  
+  .ltv-gradient-subtle {
+    background: var(--gradient-subtle);
+  }
+  
+  .ltv-gradient-hero {
+    background: var(--gradient-hero);
+  }
+  
+  .ltv-card {
+    @apply bg-card text-card-foreground rounded-lg border-t-2 border-t-primary;
+    box-shadow: var(--shadow-card);
+    transition: var(--transition-card);
+  }
+  
+  .ltv-card:hover {
+    box-shadow: var(--shadow-card-hover);
+    @apply -translate-y-1;
+  }
+  
+  .ltv-modal {
+    box-shadow: var(--shadow-modal);
+  }
+  
+  .ltv-text-orange {
+    color: hsl(var(--ltv-orange));
+  }
+  
+  .ltv-text-gray {
+    color: hsl(var(--ltv-gray-medium));
+  }
+  
+  .ltv-bg-orange {
+    background-color: hsl(var(--ltv-orange));
+  }
+  
+  .ltv-bg-orange-light {
+    background-color: hsl(var(--ltv-orange-light));
+  }
+  
+  /* Typography */
+  .ltv-title {
+    @apply text-3xl md:text-4xl font-bold tracking-tight;
+  }
+  
+  .ltv-subtitle {
+    @apply text-lg md:text-xl font-medium;
+  }
+  
+  .ltv-body {
+    @apply text-base font-normal leading-relaxed;
+  }
+  
+  .ltv-small {
+    @apply text-sm font-medium;
+  }
+}
