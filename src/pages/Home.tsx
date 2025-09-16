@@ -64,10 +64,7 @@ const Home = () => {
                 </div>
               </div>
               <Button 
-                onClick={() => {
-                  console.log('Clicou em Entrar como Aluno');
-                  navigate('/login');
-                }}
+                onClick={() => window.location.href = '/login'}
                 className="w-full text-lg py-6 group"
                 size="lg"
               >
@@ -105,10 +102,7 @@ const Home = () => {
                 </div>
               </div>
               <Button 
-                onClick={() => {
-                  console.log('Clicou em Postar uma Vaga');
-                  navigate('/aplicar');
-                }}
+                onClick={() => window.location.href = '/aplicar'}
                 variant="outline"
                 className="w-full text-lg py-6 group border-primary text-primary hover:bg-primary hover:text-primary-foreground"
                 size="lg"
