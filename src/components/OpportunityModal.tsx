@@ -43,7 +43,7 @@ export const OpportunityModal = ({ opportunity, isOpen, onClose }: OpportunityMo
     const message = encodeURIComponent(
       `Olá ${opportunity.nome}! Vim através do Balcão dos Funis - LTV Tribe e tenho interesse em ajudar com seu projeto. Podemos conversar?`
     );
-    window.open(`https://wa.me/${opportunity.whatsapp.replace(/\D/g, '')}?text=${message}`, '_blank');
+    window.open(`https://wa.me/${opportunity.whatsapp_public.replace(/\D/g, '')}?text=${message}`, '_blank');
   };
 
   const handleEmailClick = () => {
@@ -51,7 +51,7 @@ export const OpportunityModal = ({ opportunity, isOpen, onClose }: OpportunityMo
     const body = encodeURIComponent(
       `Olá ${opportunity.nome}!\n\nVim através do Balcão dos Funis - LTV Tribe e tenho interesse em ajudar com seu projeto.\n\nGostaria de agendar uma conversa para entendermos melhor como posso contribuir.\n\nAguardo seu retorno!\n\nAtenciosamente`
     );
-    window.open(`mailto:${opportunity.email}?subject=${subject}&body=${body}`, '_blank');
+    window.open(`mailto:${opportunity.email_public}?subject=${subject}&body=${body}`, '_blank');
   };
 
   return (
@@ -143,12 +143,17 @@ export const OpportunityModal = ({ opportunity, isOpen, onClose }: OpportunityMo
             <div className="text-center space-y-2 ltv-text-gray ltv-small">
               <div className="flex items-center justify-center gap-2">
                 <Phone size={14} />
-                <span>{opportunity.whatsapp}</span>
+                <span>{opportunity.whatsapp_public}</span>
               </div>
               <div className="flex items-center justify-center gap-2">
                 <Mail size={14} />
-                <span className="break-all">{opportunity.email}</span>
+                <span className="break-all">{opportunity.email_public}</span>
               </div>
+              {opportunity.contact_message && (
+                <div className="mt-3 p-3 bg-accent/50 rounded-lg">
+                  <p className="ltv-small text-center">{opportunity.contact_message}</p>
+                </div>
+              )}
             </div>
           </div>
         </div>

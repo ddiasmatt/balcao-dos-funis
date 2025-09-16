@@ -39,10 +39,9 @@ const Dashboard = () => {
     const fetchOpportunities = async () => {
       try {
         setLoading(true);
+        // Use the secure RPC function that returns ofuscated contact info
         const { data, error } = await supabase
-          .from('opportunities')
-          .select('*')
-          .order('created_at', { ascending: false });
+          .rpc('get_public_opportunities');
 
         console.log('Supabase response:', { data, error });
 
@@ -53,9 +52,9 @@ const Dashboard = () => {
 
         if (data) {
           console.log('Setting opportunities:', data);
-          setOpportunities(data);
+          setOpportunities(data as unknown as Opportunity[]);
           // Extract unique nichos from the data
-          const uniqueNichos = ['Todos', ...new Set(data.map(item => item.nicho))];
+          const uniqueNichos = ['Todos', ...new Set(data.map((item: any) => item.nicho))];
           console.log('Setting nichos:', uniqueNichos);
           setNichos(uniqueNichos);
         }
@@ -196,7 +195,7 @@ const Dashboard = () => {
             {filteredOpportunities.map((opportunity) => (
               <OpportunityCard
                 key={opportunity.id}
-                opportunity={opportunity}
+                opportunity={opportunity as any}
                 onClick={() => handleCardClick(opportunity)}
               />
             ))}
@@ -232,7 +231,7 @@ const Dashboard = () => {
 
       {/* Modal de detalhes */}
       <OpportunityModal
-        opportunity={selectedOpportunity}
+        opportunity={selectedOpportunity as any}
         isOpen={isModalOpen}
         onClose={handleCloseModal}
       />
