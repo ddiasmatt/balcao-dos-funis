@@ -17,6 +17,7 @@ export type Database = {
       opportunities: {
         Row: {
           como_ajudar: string
+          contact_message: string | null
           created_at: string
           email: string
           faturamento: string
@@ -25,12 +26,15 @@ export type Database = {
           nicho: string
           nome: string
           por_que_escolher: string
+          public_contact_method: string | null
+          show_full_contact: boolean | null
           updated_at: string
           user_id: string
           whatsapp: string
         }
         Insert: {
           como_ajudar: string
+          contact_message?: string | null
           created_at?: string
           email: string
           faturamento: string
@@ -39,12 +43,15 @@ export type Database = {
           nicho: string
           nome: string
           por_que_escolher: string
+          public_contact_method?: string | null
+          show_full_contact?: boolean | null
           updated_at?: string
           user_id: string
           whatsapp: string
         }
         Update: {
           como_ajudar?: string
+          contact_message?: string | null
           created_at?: string
           email?: string
           faturamento?: string
@@ -53,6 +60,8 @@ export type Database = {
           nicho?: string
           nome?: string
           por_que_escolher?: string
+          public_contact_method?: string | null
+          show_full_contact?: boolean | null
           updated_at?: string
           user_id?: string
           whatsapp?: string
@@ -61,7 +70,54 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      opportunities_public: {
+        Row: {
+          como_ajudar: string | null
+          contact_message: string | null
+          created_at: string | null
+          email_public: string | null
+          faturamento: string | null
+          id: string | null
+          instagram: string | null
+          nicho: string | null
+          nome: string | null
+          por_que_escolher: string | null
+          public_contact_method: string | null
+          updated_at: string | null
+          whatsapp_public: string | null
+        }
+        Insert: {
+          como_ajudar?: string | null
+          contact_message?: string | null
+          created_at?: string | null
+          email_public?: never
+          faturamento?: string | null
+          id?: string | null
+          instagram?: string | null
+          nicho?: string | null
+          nome?: string | null
+          por_que_escolher?: string | null
+          public_contact_method?: string | null
+          updated_at?: string | null
+          whatsapp_public?: never
+        }
+        Update: {
+          como_ajudar?: string | null
+          contact_message?: string | null
+          created_at?: string | null
+          email_public?: never
+          faturamento?: string | null
+          id?: string | null
+          instagram?: string | null
+          nicho?: string | null
+          nome?: string | null
+          por_que_escolher?: string | null
+          public_contact_method?: string | null
+          updated_at?: string | null
+          whatsapp_public?: never
+        }
+        Relationships: []
+      }
     }
     Functions: {
       [_ in never]: never
