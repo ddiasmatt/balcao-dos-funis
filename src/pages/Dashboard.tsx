@@ -39,11 +39,14 @@ const Dashboard = () => {
     const fetchOpportunities = async () => {
       try {
         setLoading(true);
+        console.log('Calling RPC function: get_public_opportunities');
+        
         // Use the secure RPC function that returns ofuscated contact info
         const { data, error } = await supabase
           .rpc('get_public_opportunities');
 
-        console.log('Supabase response:', { data, error });
+        console.log('Supabase RPC response:', { data, error });
+        console.log('Data type:', typeof data, 'Data length:', data?.length);
 
         if (error) {
           console.error('Error fetching opportunities:', error);
