@@ -142,20 +142,9 @@ const Application = () => {
                     render={({ field }) => (
                       <FormItem>
                         <FormLabel>Nicho *</FormLabel>
-                        <Select onValueChange={field.onChange} value={field.value}>
-                          <FormControl>
-                            <SelectTrigger>
-                              <SelectValue placeholder="Selecione seu nicho" />
-                            </SelectTrigger>
-                          </FormControl>
-                          <SelectContent>
-                            {filteredNichos.map((nicho) => (
-                              <SelectItem key={nicho} value={nicho}>
-                                {nicho}
-                              </SelectItem>
-                            ))}
-                          </SelectContent>
-                        </Select>
+                        <FormControl>
+                          <Input placeholder="Digite seu nicho de atuação" {...field} />
+                        </FormControl>
                         <FormMessage />
                       </FormItem>
                     )}
