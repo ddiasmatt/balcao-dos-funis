@@ -191,7 +191,7 @@ const Application = () => {
                       <FormItem>
                         <FormLabel>Instagram *</FormLabel>
                         <FormControl>
-                          <Input placeholder="@seuinstagram" {...field} />
+                          <Input placeholder="seuinstagram" {...field} />
                         </FormControl>
                         <FormMessage />
                       </FormItem>
