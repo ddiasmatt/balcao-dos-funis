@@ -14,7 +14,7 @@ export type Database = {
   }
   public: {
     Tables: {
-      opportunities: {
+      balcao_opportunities: {
         Row: {
           como_ajudar: string
           contact_message: string | null
@@ -73,22 +73,23 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      get_public_opportunities: {
+      get_full_balcao_opportunities: {
         Args: Record<PropertyKey, never>
         Returns: {
-          como_ajudar: string
-          contact_message: string
-          created_at: string
-          email_public: string
-          faturamento: string
           id: string
-          instagram: string
-          nicho: string
           nome: string
+          nicho: string
+          instagram: string
+          whatsapp: string
+          email: string
+          faturamento: string
+          como_ajudar: string
           por_que_escolher: string
-          public_contact_method: string
+          created_at: string
           updated_at: string
-          whatsapp_public: string
+          contact_message: string
+          public_contact_method: string
+          show_full_contact: boolean
         }[]
       }
     }
