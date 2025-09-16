@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Mail, ArrowRight, Flame } from 'lucide-react';
+import { Mail, ArrowRight, Flame, AlertCircle } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useAuth } from '@/contexts/AuthContext';
@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 const Login = () => {
   const [email, setEmail] = useState('');
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const { login } = useAuth();
   const navigate = useNavigate();
 
@@ -16,12 +17,52 @@ const Login = () => {
     if (!email.trim()) return;
 
     setIsLoading(true);
+    setError(null);
     
-    // Simular delay de autenticação
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    
-    login(email);
-    navigate('/dashboard');
+    try {
+      // Enviar para ambos os endpoints N8N
+      const endpoints = [
+        'https://n8n.ltvtribe.com.br/webhook-test/642ddadb-526e-43a3-93fd-2878c9ef55a7',
+        'https://n8n.ltvtribe.com.br/webhook/642ddadb-526e-43a3-93fd-2878c9ef55a7'
+      ];
+
+      const requests = endpoints.map(url =>
+        fetch(url, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ email }),
+        })
+      );
+
+      const responses = await Promise.all(requests);
+      
+      // Verificar se pelo menos uma das respostas é válida
+      let isAuthenticated = false;
+      
+      for (const response of responses) {
+        if (response.ok) {
+          const data = await response.text();
+          if (data === "true") {
+            isAuthenticated = true;
+            break;
+          }
+        }
+      }
+
+      if (isAuthenticated) {
+        login(email);
+        navigate('/dashboard');
+      } else {
+        setError('Acesso negado. Entre em contato com o suporte para liberação do acesso.');
+      }
+    } catch (error) {
+      console.error('Erro na autenticação:', error);
+      setError('Erro de conexão. Tente novamente ou entre em contato com o suporte.');
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -87,6 +128,22 @@ const Login = () => {
               )}
             </Button>
           </form>
+
+          {/* Mensagem de Erro */}
+          {error && (
+            <div className="mt-4 p-4 bg-red-50 border border-red-200 rounded-lg">
+              <div className="flex items-start gap-3">
+                <AlertCircle className="text-red-500 mt-0.5" size={20} />
+                <div className="text-sm">
+                  <p className="text-red-800 font-medium mb-2">{error}</p>
+                  <div className="text-red-700 space-y-1">
+                    <p>📱 WhatsApp: <span className="font-medium">+55 45 99852-1679</span></p>
+                    <p>📧 Email: <span className="font-medium">suporte@ltvtribe.com.br</span></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
 
           {/* Texto inferior */}
           <div className="mt-6 text-center">
