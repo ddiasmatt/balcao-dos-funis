@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import { AuthProvider, useAuth } from "@/contexts/AuthContext";
 import { ProtectedRoute } from "@/components/ProtectedRoute";
+import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Application from "./pages/Application";
@@ -12,16 +13,10 @@ import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
 
-// Componente para redirecionar da home baseado no status de auth
-const HomeRedirect = () => {
-  const { user } = useAuth();
-  return <Navigate to={user ? "/dashboard" : "/login"} replace />;
-};
-
 const AppRoutes = () => {
   return (
     <Routes>
-      <Route path="/" element={<HomeRedirect />} />
+      <Route path="/" element={<Home />} />
       <Route path="/login" element={<Login />} />
       <Route path="/dashboard" element={
         <ProtectedRoute>
