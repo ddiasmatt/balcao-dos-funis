@@ -51,7 +51,7 @@ const Application = () => {
     setIsSubmitting(true);
     try {
       const { error } = await supabase
-        .from('opportunities')
+        .from('balcao_opportunities')
         .insert({
           user_id: data.email, // Usar email como identificador já que não há auth
           ...data,

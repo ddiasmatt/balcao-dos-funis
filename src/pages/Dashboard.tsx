@@ -39,12 +39,12 @@ const Dashboard = () => {
     const fetchOpportunities = async () => {
       try {
         setLoading(true);
-        console.log('Calling RPC function: get_full_balcao_opportunities');
+        console.log('Calling RPC function: get_public_opportunities');
         console.log('Supabase URL:', import.meta.env.VITE_SUPABASE_URL);
         
         // Use the RPC function for full opportunities data
         const { data, error } = await supabase
-          .rpc('get_full_balcao_opportunities');
+          .rpc('get_public_opportunities');
 
         console.log('Supabase query response:', { data, error });
         console.log('Data type:', typeof data, 'Data length:', data?.length);
