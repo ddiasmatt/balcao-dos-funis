@@ -24,7 +24,7 @@ interface Opportunity {
 }
 
 const Dashboard = () => {
-  const { user, signOut } = useAuth();
+  const { user, logout } = useAuth();
   const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedNicho, setSelectedNicho] = useState('Todos');
@@ -124,12 +124,12 @@ const Dashboard = () => {
           <div className="flex items-center gap-4">
             <div className="hidden sm:flex items-center gap-2 ltv-text-gray">
               <User size={16} />
-              <span className="ltv-small">Olá, {getUserDisplayName(user!.email)}</span>
+              <span className="ltv-small">Olá, {getUserDisplayName(user!)}</span>
             </div>
             <Button
               variant="outline"
               size="sm"
-              onClick={signOut}
+              onClick={logout}
               className="border-primary ltv-text-orange hover:bg-accent"
             >
               <LogOut size={16} className="mr-2" />
