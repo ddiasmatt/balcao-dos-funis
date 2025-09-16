@@ -24,7 +24,7 @@ services:
         - "traefik.http.routers.balcao-secure.rule=Host(`balcao.ltvtribe.com.br`)"
         - "traefik.http.routers.balcao-secure.entrypoints=websecure"
         - "traefik.http.routers.balcao-secure.tls=true"
-        - "traefik.http.routers.balcao-secure.tls.certresolver=letsencrypt"
+        - "traefik.http.routers.balcao-secure.tls.certresolver=letsencryptresolver"
         
         # Service
         - "traefik.http.services.balcao.loadbalancer.server.port=80"
