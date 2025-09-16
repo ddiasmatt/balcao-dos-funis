@@ -70,57 +70,27 @@ export type Database = {
       }
     }
     Views: {
-      opportunities_public: {
-        Row: {
-          como_ajudar: string | null
-          contact_message: string | null
-          created_at: string | null
-          email_public: string | null
-          faturamento: string | null
-          id: string | null
-          instagram: string | null
-          nicho: string | null
-          nome: string | null
-          por_que_escolher: string | null
-          public_contact_method: string | null
-          updated_at: string | null
-          whatsapp_public: string | null
-        }
-        Insert: {
-          como_ajudar?: string | null
-          contact_message?: string | null
-          created_at?: string | null
-          email_public?: never
-          faturamento?: string | null
-          id?: string | null
-          instagram?: string | null
-          nicho?: string | null
-          nome?: string | null
-          por_que_escolher?: string | null
-          public_contact_method?: string | null
-          updated_at?: string | null
-          whatsapp_public?: never
-        }
-        Update: {
-          como_ajudar?: string | null
-          contact_message?: string | null
-          created_at?: string | null
-          email_public?: never
-          faturamento?: string | null
-          id?: string | null
-          instagram?: string | null
-          nicho?: string | null
-          nome?: string | null
-          por_que_escolher?: string | null
-          public_contact_method?: string | null
-          updated_at?: string | null
-          whatsapp_public?: never
-        }
-        Relationships: []
-      }
+      [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      get_public_opportunities: {
+        Args: Record<PropertyKey, never>
+        Returns: {
+          como_ajudar: string
+          contact_message: string
+          created_at: string
+          email_public: string
+          faturamento: string
+          id: string
+          instagram: string
+          nicho: string
+          nome: string
+          por_que_escolher: string
+          public_contact_method: string
+          updated_at: string
+          whatsapp_public: string
+        }[]
+      }
     }
     Enums: {
       [_ in never]: never
