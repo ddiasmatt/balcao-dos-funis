@@ -52,10 +52,7 @@ const Application = () => {
     try {
       const { error } = await supabase
         .from('balcao_opportunities')
-        .insert({
-          user_id: data.email, // Usar email como identificador já que não há auth
-          ...data,
-        });
+        .insert(data);
 
       if (error) throw error;
 
