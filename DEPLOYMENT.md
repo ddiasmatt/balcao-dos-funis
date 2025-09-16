@@ -1,222 +1,269 @@
-# Deployment Guide - Balcão dos Funis
+# 🚀 GUIA DEFINITIVO: Deploy Balcão dos Funis - Portainer + Traefik
 
-## Pré-requisitos
+Este projeto foi configurado seguindo as melhores práticas para deploy em Docker Swarm com Portainer e Traefik.
 
-- VPS Contabo com Docker e Docker Compose instalados
+## 📋 Pré-requisitos
+
+- Docker Swarm inicializado
 - Traefik configurado como reverse proxy
 - Portainer instalado para gerenciamento
-- Domínio `balcao.ltvtribe.com.br` apontando para o IP da VPS
+- Rede `traefik-public` criada no Swarm
+- Domínio `app.ltvtribe.com.br` apontando para o IP do servidor
 
-## Arquivos de Configuração
+## 📁 Estrutura do Projeto
 
-### 1. Dockerfile
-Multi-stage build que:
-- Constrói a aplicação React/TypeScript
-- Serve via Nginx otimizado
-- Inclui configurações de cache e segurança
+```
+balcao-dos-funis/
+├── src/                         # Código fonte React
+├── public/                      # Assets públicos
+├── Dockerfile                   # Build otimizado multi-stage
+├── nginx.conf                   # Configuração Nginx para SPA
+├── docker-compose.yml           # Desenvolvimento local
+├── docker-compose.swarm.yml     # Deploy produção (Portainer)
+├── .github/workflows/deploy.yml # CI/CD automatizado
+├── .env.example                 # Variáveis de ambiente
+└── DEPLOYMENT.md               # Este guia
 
-### 2. docker-compose.yml
-Configurado com:
-- Labels Traefik para roteamento automático
-- SSL/TLS automático via Let's Encrypt
-- Redirecionamento HTTP → HTTPS
-- Headers de segurança
-- Rede externa do Traefik
-
-### 3. nginx.conf
-- Suporte ao React Router (SPA)
-- Compressão gzip
-- Cache para assets estáticos
-- Headers de segurança
-
-## Deploy no Contabo
-
-### Opção 1: Deploy via CLI (Docker Compose Standalone)
-
-#### Passo 1: Preparar o ambiente
-```bash
-# Conectar na VPS
-ssh root@seu-ip-contabo
-
-# Criar diretório do projeto
-mkdir -p /opt/balcao-dos-funis
-cd /opt/balcao-dos-funis
 ```
 
-#### Passo 2: Clonar o repositório
-```bash
-# Clonar via HTTPS
-git clone https://github.com/ddiasmatt/balcao-dos-funis.git .
+## ⚙️ Configurações Implementadas
 
-# Ou via SSH (se configurado)
-git clone git@github.com:ddiasmatt/balcao-dos-funis.git .
+### 🐳 Dockerfile Otimizado
+- Multi-stage build (Node.js + Nginx)
+- Produção com `npm ci --only=production`
+- Nginx Alpine para menor tamanho
+- Health checks integrados
+
+### 🌐 Nginx.conf para React Router
+- Suporte completo a SPA (try_files)
+- Compressão gzip automática
+- Cache inteligente para assets
+- Headers de segurança aplicados
+
+### 🔧 Docker Compose Swarm (Produção)
+- **Configuração Traefik CORRETA** seguindo melhores práticas
+- Router unificado (não separar HTTP/HTTPS)
+- Rede `traefik-public` padronizada
+- Health checks e resource limits
+- Environment variables configuráveis
+
+### 🚀 GitHub Actions CI/CD
+- Build e push automático para GHCR
+- Multi-architecture (amd64/arm64)
+- Trigger webhook Portainer
+- Cache otimizado
+
+## 🔧 PASSO A PASSO: Deploy no Portainer
+
+### 🛠️ 1. Preparação do Ambiente
+
+#### Criar rede Traefik (uma vez só)
+```bash
+# Conectar no servidor
+ssh root@seu-servidor
+
+# Criar rede do Traefik no Swarm
+docker network create --driver=overlay --attachable traefik-public
+
+# Verificar se foi criada
+docker network ls | grep traefik-public
 ```
 
-#### Passo 3: Configurar variáveis de ambiente
-```bash
-# Copiar arquivo de produção
-cp .env.production .env
+### 🐳 2. Deploy via Portainer Stack
 
-# Editar se necessário
-nano .env
-```
-
-#### Passo 4: Deploy via Docker Compose
-```bash
-# Build e start dos containers
-docker-compose up -d --build
-
-# Verificar logs
-docker-compose logs -f balcao-dos-funis
-```
-
-### Opção 2: Deploy via Portainer (Docker Swarm) - Método Git Repository
-
-#### Passo 1: Preparar VPS e Configurar GitHub Registry
-```bash
-# Conectar na VPS
-ssh root@seu-ip-contabo
-
-# Verificar se rede traefik existe no Swarm
-docker network ls | grep traefik
-
-# Se não existir, criar rede traefik no Swarm
-docker network create --driver overlay traefik
-
-# Fazer login no GitHub Container Registry
-# (use um Personal Access Token com permissão packages:read)
-echo "SEU_GITHUB_TOKEN" | docker login ghcr.io -u SEU_USUARIO --password-stdin
-```
-
-**Importante**: A imagem Docker será construída automaticamente pelo GitHub Actions e disponibilizada em `ghcr.io/ddiasmatt/balcao-dos-funis:main`
-
-#### Passo 2: Deploy via Portainer Web UI
-1. Acesse `https://portainer.ltvtribe.com.br`
+#### Passo A: Acessar Portainer
+1. Acesse o Portainer: `https://portainer.seudominio.com`
 2. Faça login com suas credenciais
-3. Clique em **"Stacks"** no menu lateral
-4. Clique em **"Add stack"**
-5. Nome do stack: `balcao-dos-funis`
+3. Selecione o endpoint do Docker Swarm
 
-#### Passo 3: Configurar Git Repository
-1. Selecione **"Git repository"**
-2. **Repository URL**: `https://github.com/ddiasmatt/balcao-dos-funis`
-3. **Reference**: `refs/heads/main`
-4. **Compose path**: `docker-compose.swarm.yml`
-5. **Auto-update**: Deixe desmarcado (ou configure conforme necessário)
+#### Passo B: Criar Nova Stack
+1. Clique em **"Stacks"** no menu lateral
+2. Clique em **"Add stack"**
+3. **Nome do stack**: `balcao-dos-funis-producao`
 
-#### Passo 4: Configurar Environment Variables
-Na seção **"Environment variables"**, adicione:
-- **Nome**: `VITE_SUPABASE_URL` → **Valor**: `https://db.ltvtribe.com.br`
-- **Nome**: `VITE_SUPABASE_PUBLISHABLE_KEY` → **Valor**: `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...`
+#### Passo C: Configurar Stack
+1. **Build method**: `Web editor`
+2. Cole o conteúdo do arquivo `docker-compose.swarm.yml`:
 
-#### Passo 5: Deploy
+```yaml
+version: '3.8'
+
+networks:
+  traefik-public:
+    external: true
+
+services:
+  balcao-dos-funis:
+    image: ghcr.io/ddiasmatt/balcao-dos-funis:${VERSION:-latest}
+    networks:
+      - traefik-public
+    deploy:
+      replicas: 2
+      update_config:
+        parallelism: 1
+        delay: 10s
+      restart_policy:
+        condition: on-failure
+        delay: 5s
+        max_attempts: 3
+      resources:
+        limits:
+          cpus: '0.5'
+          memory: 512M
+        reservations:
+          cpus: '0.25'
+          memory: 256M
+      labels:
+        # ✅ CONFIGURAÇÃO CORRETA DO TRAEFIK
+        - "traefik.enable=true"
+        - "traefik.docker.network=traefik-public"
+
+        # ✅ PORTA OBRIGATÓRIA NO SWARM
+        - "traefik.http.services.balcao-dos-funis.loadbalancer.server.port=80"
+
+        # ✅ ROUTER UNIFICADO
+        - "traefik.http.routers.balcao-dos-funis.rule=Host(`${DOMAIN:-app.ltvtribe.com.br}`)"
+        - "traefik.http.routers.balcao-dos-funis.entrypoints=web,websecure"
+        - "traefik.http.routers.balcao-dos-funis.tls=true"
+        - "traefik.http.routers.balcao-dos-funis.tls.certresolver=letsencryptresolver"
+
+        # ✅ MIDDLEWARES
+        - "traefik.http.middlewares.balcao-dos-funis-compress.compress=true"
+        - "traefik.http.routers.balcao-dos-funis.middlewares=balcao-dos-funis-compress"
+    healthcheck:
+      test: ["CMD", "wget", "-q", "--spider", "http://localhost/"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+```
+
+#### Passo D: Environment Variables
+Na seção **"Environment variables"**:
+```
+VERSION=latest
+DOMAIN=app.ltvtribe.com.br
+```
+
+#### Passo E: Deploy Options
+- ✅ **Enable auto-update** (via webhook)
+- ✅ **Prune services**
+
+#### Passo F: Deploy
 1. Clique em **"Deploy the stack"**
-2. Aguarde o download da imagem e deploy (alguns minutos na primeira vez)
+2. Aguarde o download da imagem (alguns minutos na primeira vez)
 3. Monitore logs na interface do Portainer
 
-**Nota**: Se der erro de imagem não encontrada, certifique-se de que:
-- O GitHub Actions executou com sucesso (check na aba Actions do repositório)
-- A imagem foi publicada em `ghcr.io/ddiasmatt/balcao-dos-funis:main`
-- O login no registry foi feito na VPS
+## ✅ 3. Verificação do Deploy
 
-### Passo 6: Verificar no Portainer
-1. Acesse o Portainer da VPS
-2. Vá em "Containers" ou "Services" (para Swarm)
-3. Verifique se o container/service `balcao-dos-funis` está rodando
-4. Monitore logs e recursos
-
-## Verificação do Deploy
-
-### 1. Verificar container
+### Checklist de Validação
 ```bash
-docker ps | grep balcao
-docker logs balcao-dos-funis
+# 1. Verificar se o serviço está rodando
+docker service ls | grep balcao
+
+# 2. Verificar logs
+docker service logs balcao-dos-funis-producao_balcao-dos-funis -f
+
+# 3. Verificar certificado SSL
+curl -I https://app.ltvtribe.com.br
+
+# 4. Verificar se Traefik vê o serviço
+# (acessar dashboard do Traefik)
+
+# 5. Verificar health check
+curl -f https://app.ltvtribe.com.br || echo "Site down"
 ```
 
-### 2. Testar conectividade
-```bash
-# Testar HTTP (deve redirecionar para HTTPS)
-curl -I http://balcao.ltvtribe.com.br
+### Verificar no Navegador
+- ✅ Acesse: `https://app.ltvtribe.com.br`
+- ✅ Verifica se carrega sem erros
+- ✅ Teste funcionalidades principais
+- ✅ Verifique console do navegador (sem erros)
 
-# Testar HTTPS
-curl -I https://balcao.ltvtribe.com.br
-```
+## 🔄 4. Atualizações e CI/CD
 
-### 3. Verificar no navegador
-- Acesse: https://balcao.ltvtribe.com.br
-- Verifique se carrega corretamente
-- Teste o login com webhooks
+### 🚀 Fluxo Automático (GitHub Actions)
+1. **Fazer commit** no branch `main`
+2. **GitHub Actions** executa automaticamente:
+   - Build da aplicação
+   - Build e push da imagem Docker
+   - Trigger do webhook do Portainer
+3. **Portainer** atualiza automaticamente o serviço
 
-## Atualizações
+### 📱 Webhook para Auto-Deploy
 
-### Deploy de nova versão
+#### Configurar no Portainer:
+1. Stack → Settings → Webhooks
+2. Copiar URL do webhook
 
-**Via Docker Compose (CLI):**
-```bash
-cd /opt/balcao-dos-funis
+#### Configurar no GitHub:
+1. Repository → Settings → Secrets and variables → Actions
+2. Adicionar secret: `PORTAINER_WEBHOOK_URL` = URL copiada
 
-# Pull das mudanças
-git pull origin main
-
-# Rebuild e restart
-docker-compose down
-docker-compose up -d --build
-```
-
-**Via Portainer (Swarm) - Método Git Repository:**
-No Portainer:
+### 🔧 Deploy Manual via Portainer
 1. Vá em **"Stacks"**
-2. Clique no stack **"balcao-dos-funis"**  
-3. Clique **"Update the stack"**
-4. Clique **"Pull and redeploy"** (para puxar as últimas mudanças do Git)
-5. Clique **"Update"**
+2. Clique no stack **"balcao-dos-funis-producao"**
+3. Clique **"Update"**
+4. Altere a versão em Environment Variables se necessário
+5. Clique **"Update the stack"**
 
-Obs: O Portainer automaticamente fará o pull do repositório Git e rebuild da aplicação.
+## 📊 5. Monitoramento
 
-### Rollback rápido
+### Logs em Tempo Real
 ```bash
-# Voltar para commit anterior
-git reset --hard HEAD~1
-docker-compose down
-docker-compose up -d --build
+# Via Docker (no servidor)
+docker service logs balcao-dos-funis-producao_balcao-dos-funis -f
+
+# Via Portainer Web UI
+# Stacks → balcao-dos-funis-producao → Services → Logs
 ```
 
-## Monitoramento
-
-### Logs em tempo real
+### Métricas de Performance
 ```bash
-docker-compose logs -f balcao-dos-funis
+# Uso de recursos dos containers
+docker stats
+
+# Verificar health checks
+docker service ps balcao-dos-funis-producao_balcao-dos-funis
 ```
 
-### Uso de recursos
+## 🚨 6. Troubleshooting
+
+### Problema: 404 Not Found
 ```bash
-docker stats balcao-dos-funis
+# Verificar labels do serviço
+docker service inspect balcao-dos-funis-producao_balcao-dos-funis --pretty
+
+# Verificar rede
+docker network ls | grep traefik-public
+```
+**Solução**: Labels DEVEM estar sob `deploy:` no docker-compose.swarm.yml
+
+### Problema: SSL não funciona
+```bash
+# Verificar logs do Traefik
+docker service logs traefik_traefik 2>&1 | grep acme
+
+# Verificar se porta 80 está acessível
+curl -I http://app.ltvtribe.com.br
 ```
 
-### Health check
+### Problema: Bad Gateway
 ```bash
-curl -f https://balcao.ltvtribe.com.br || echo "Site down"
+# Verificar se serviços estão na mesma rede
+docker service inspect balcao-dos-funis-producao_balcao-dos-funis | grep Networks
+
+# Verificar health check
+docker service ps balcao-dos-funis-producao_balcao-dos-funis
 ```
 
-## Troubleshooting
-
-### Container não inicia
+### Imagem não encontrada
 ```bash
-# Verificar logs detalhados
-docker-compose logs balcao-dos-funis
+# Verificar se GitHub Actions executou
+# Repository → Actions → último workflow
 
-# Verificar build
-docker-compose build --no-cache
+# Login manual no registry
+echo "$GITHUB_TOKEN" | docker login ghcr.io -u username --password-stdin
 ```
-
-### SSL não funciona
-1. Verificar se domínio aponta para VPS
-2. Verificar logs do Traefik
-3. Verificar configuração do Let's Encrypt
-
-### Webhook CORS em produção
-- Em produção, os webhooks funcionam diretamente (sem proxy)
-- URLs configuradas em `.env.production`
 
 ## Configuração do Traefik
 
