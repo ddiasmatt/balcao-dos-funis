@@ -43,7 +43,7 @@ export const OpportunityModal = ({ opportunity, isOpen, onClose }: OpportunityMo
     const message = encodeURIComponent(
       `Olá ${opportunity.nome}! Vim através do Balcão dos Funis - LTV Tribe e tenho interesse em ajudar com seu projeto. Podemos conversar?`
     );
-    // Remove todos os caracteres não numéricos e garante que tenha o código do país
+    // Remove todos os caracteres não numéricos
     let phoneNumber = opportunity.whatsapp_public.replace(/\D/g, '');
     
     // Se não começar com 55 (código do Brasil), adiciona
@@ -51,7 +51,10 @@ export const OpportunityModal = ({ opportunity, isOpen, onClose }: OpportunityMo
       phoneNumber = '55' + phoneNumber;
     }
     
-    window.open(`https://wa.me/${phoneNumber}?text=${message}`, '_blank');
+    // Usar o formato mais simples do wa.me
+    const whatsappUrl = `https://wa.me/${phoneNumber}?text=${message}`;
+    console.log('WhatsApp URL:', whatsappUrl); // Para debug
+    window.open(whatsappUrl, '_blank');
   };
 
   const handleEmailClick = () => {
