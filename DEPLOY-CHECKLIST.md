@@ -15,13 +15,12 @@ docker info | grep Swarm
 docker swarm init
 ```
 
-### 2. Verificar rede traefik-public
+### 2. Verificar rede LTVTribeNet
 ```bash
-# Verificar se rede existe
-docker network ls | grep traefik-public
+# Verificar se rede existe (já existe no seu ambiente)
+docker network ls | grep LTVTribeNet
 
-# Se não existir, criar
-docker network create --driver=overlay --attachable traefik-public
+# Rede LTVTribeNet já está configurada no seu Traefik
 ```
 
 ### 3. Verificar Traefik rodando
@@ -58,14 +57,14 @@ curl -I https://portainer.seudominio.com
 version: '3.8'
 
 networks:
-  traefik-public:
+  LTVTribeNet:
     external: true
 
 services:
   balcao-dos-funis:
     image: ghcr.io/ddiasmatt/balcao-dos-funis:latest
     networks:
-      - traefik-public
+      - LTVTribeNet
     deploy:
       replicas: 2
       update_config:
@@ -85,7 +84,7 @@ services:
       labels:
         # Traefik Configuration
         - "traefik.enable=true"
-        - "traefik.docker.network=traefik-public"
+        - "traefik.docker.network=LTVTribeNet"
         - "traefik.http.services.balcao-dos-funis.loadbalancer.server.port=80"
         - "traefik.http.routers.balcao-dos-funis.rule=Host(`app.ltvtribe.com.br`)"
         - "traefik.http.routers.balcao-dos-funis.entrypoints=web,websecure"

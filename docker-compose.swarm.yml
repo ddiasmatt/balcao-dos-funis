@@ -1,14 +1,14 @@
 version: '3.8'
 
 networks:
-  traefik-public:
+  LTVTribeNet:
     external: true
 
 services:
   balcao-dos-funis:
     image: ghcr.io/ddiasmatt/balcao-dos-funis:${VERSION:-latest}
     networks:
-      - traefik-public
+      - LTVTribeNet
     deploy:
       replicas: 2
       update_config:
@@ -28,7 +28,7 @@ services:
       labels:
         # ✅ CONFIGURAÇÃO CORRETA DO TRAEFIK
         - "traefik.enable=true"
-        - "traefik.docker.network=traefik-public"
+        - "traefik.docker.network=LTVTribeNet"
 
         # ✅ PORTA OBRIGATÓRIA NO SWARM
         - "traefik.http.services.balcao-dos-funis.loadbalancer.server.port=80"
