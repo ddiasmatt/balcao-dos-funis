@@ -68,8 +68,8 @@ services:
         - "traefik.http.routers.balcao-dos-funis.entrypoints=web,websecure"
         - "traefik.http.routers.balcao-dos-funis.tls=true"
         - "traefik.http.routers.balcao-dos-funis.tls.certresolver=letsencryptresolver"
-        - "traefik.http.middlewares.balcao-dos-funis-compress.compress=true"
-        - "traefik.http.routers.balcao-dos-funis.middlewares=balcao-dos-funis-compress"
+        - "traefik.http.middlewares.balcao-compress.compress=true"
+        - "traefik.http.routers.balcao-dos-funis.middlewares=balcao-compress"
     healthcheck:
       test: ["CMD", "wget", "-q", "--spider", "http://localhost/"]
       interval: 30s

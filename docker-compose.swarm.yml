@@ -26,29 +26,22 @@ services:
           cpus: '0.25'
           memory: 256M
       labels:
-        # ✅ CONFIGURAÇÃO CORRETA DO TRAEFIK
+        # ✅ CONFIGURAÇÃO ESSENCIAL DO TRAEFIK
         - "traefik.enable=true"
         - "traefik.docker.network=LTVTribeNet"
 
         # ✅ PORTA OBRIGATÓRIA NO SWARM
         - "traefik.http.services.balcao-dos-funis.loadbalancer.server.port=80"
 
-        # ✅ ROUTER UNIFICADO (não separar HTTP/HTTPS)
+        # ✅ ROUTER SIMPLIFICADO (compatível com redirect global do Traefik)
         - "traefik.http.routers.balcao-dos-funis.rule=Host(`${DOMAIN:-app.ltvtribe.com.br}`)"
         - "traefik.http.routers.balcao-dos-funis.entrypoints=web,websecure"
         - "traefik.http.routers.balcao-dos-funis.tls=true"
         - "traefik.http.routers.balcao-dos-funis.tls.certresolver=letsencryptresolver"
 
-        # ✅ MIDDLEWARES (opcional, após funcionar)
-        - "traefik.http.middlewares.balcao-dos-funis-compress.compress=true"
-        - "traefik.http.middlewares.balcao-dos-funis-redirect.redirectscheme.scheme=https"
-        - "traefik.http.middlewares.balcao-dos-funis-redirect.redirectscheme.permanent=true"
-        - "traefik.http.middlewares.balcao-dos-funis-headers.headers.accesscontrolallowmethods=GET,OPTIONS,PUT,POST,DELETE,PATCH"
-        - "traefik.http.middlewares.balcao-dos-funis-headers.headers.accesscontrolalloworiginlist=https://${DOMAIN:-app.ltvtribe.com.br}"
-        - "traefik.http.middlewares.balcao-dos-funis-headers.headers.referrerpolicy=strict-origin-when-cross-origin"
-        - "traefik.http.middlewares.balcao-dos-funis-headers.headers.frameoptions=SAMEORIGIN"
-        - "traefik.http.middlewares.balcao-dos-funis-headers.headers.contenttypeoptions=nosniff"
-        - "traefik.http.routers.balcao-dos-funis.middlewares=balcao-dos-funis-compress,balcao-dos-funis-headers"
+        # ✅ APENAS COMPRESSÃO (sem redirect - Traefik já gerencia)
+        - "traefik.http.middlewares.balcao-compress.compress=true"
+        - "traefik.http.routers.balcao-dos-funis.middlewares=balcao-compress"
     healthcheck:
       test: ["CMD", "wget", "-q", "--spider", "http://localhost/"]
       interval: 30s
