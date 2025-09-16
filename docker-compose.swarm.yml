@@ -14,6 +14,7 @@ services:
       labels:
         # Enable Traefik
         - "traefik.enable=true"
+        - "traefik.docker.network=LTVTribeNet"
         
         # HTTP router
         - "traefik.http.routers.balcao.rule=Host(`app.ltvtribe.com.br`)"
