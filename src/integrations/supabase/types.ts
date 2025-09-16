@@ -14,7 +14,51 @@ export type Database = {
   }
   public: {
     Tables: {
-      [_ in never]: never
+      opportunities: {
+        Row: {
+          como_ajudar: string
+          created_at: string
+          email: string
+          faturamento: string
+          id: string
+          instagram: string
+          nicho: string
+          nome: string
+          por_que_escolher: string
+          updated_at: string
+          user_id: string
+          whatsapp: string
+        }
+        Insert: {
+          como_ajudar: string
+          created_at?: string
+          email: string
+          faturamento: string
+          id?: string
+          instagram: string
+          nicho: string
+          nome: string
+          por_que_escolher: string
+          updated_at?: string
+          user_id: string
+          whatsapp: string
+        }
+        Update: {
+          como_ajudar?: string
+          created_at?: string
+          email?: string
+          faturamento?: string
+          id?: string
+          instagram?: string
+          nicho?: string
+          nome?: string
+          por_que_escolher?: string
+          updated_at?: string
+          user_id?: string
+          whatsapp?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

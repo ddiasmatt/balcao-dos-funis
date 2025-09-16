@@ -1,5 +1,6 @@
 import { useState, useMemo } from 'react';
-import { Search, Filter, Flame, LogOut, User } from 'lucide-react';
+import { Search, Filter, Flame, LogOut, User, Plus } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -10,6 +11,7 @@ import { opportunities, nichos, Opportunity } from '@/lib/data';
 
 const Dashboard = () => {
   const { user, logout } = useAuth();
+  const navigate = useNavigate();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedNicho, setSelectedNicho] = useState('Todos');
   const [selectedOpportunity, setSelectedOpportunity] = useState<Opportunity | null>(null);
@@ -80,6 +82,21 @@ const Dashboard = () => {
 
       {/* Área principal */}
       <main className="container mx-auto px-4 py-8">
+        {/* Header com botão de aplicar */}
+        <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+          <div>
+            <h2 className="text-2xl font-bold text-foreground">Oportunidades</h2>
+            <p className="text-muted-foreground">Explore as oportunidades disponíveis</p>
+          </div>
+          <Button
+            onClick={() => navigate('/aplicar')}
+            className="bg-primary hover:bg-primary/90 text-primary-foreground"
+          >
+            <Plus size={16} className="mr-2" />
+            Nova Aplicação
+          </Button>
+        </div>
+
         {/* Barra de busca e filtros */}
         <div className="mb-8 space-y-4 sm:space-y-0 sm:flex sm:items-center sm:gap-4">
           {/* Campo de busca */}
