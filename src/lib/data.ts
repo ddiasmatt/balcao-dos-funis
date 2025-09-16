@@ -1,6 +1,6 @@
-// Dados mockados das oportunidades - Balcão dos Funis
+// Interface para compatibilidade - agora dados vêm do Supabase
 export interface Opportunity {
-  id: number;
+  id: string;
   nome: string;
   nicho: string;
   instagram: string;
@@ -14,7 +14,7 @@ export interface Opportunity {
 
 export const opportunities: Opportunity[] = [
   {
-    id: 1,
+    id: "1",
     nome: "Bruno Thorpe",
     nicho: "Educação",
     instagram: "@pulseventos",
@@ -26,7 +26,7 @@ export const opportunities: Opportunity[] = [
     created_at: "2025-09-16T22:22:00Z"
   },
   {
-    id: 2,
+    id: "2",
     nome: "Gisele Maria de Sousa",
     nicho: "Educação",
     instagram: "@ibesbrasil.mestrado",
@@ -38,7 +38,7 @@ export const opportunities: Opportunity[] = [
     created_at: "2025-09-16T20:15:00Z"
   },
   {
-    id: 3,
+    id: "3",
     nome: "Carlos Mendes",
     nicho: "E-commerce",
     instagram: "@lojavirtual_pro",
@@ -50,7 +50,7 @@ export const opportunities: Opportunity[] = [
     created_at: "2025-09-16T18:30:00Z"
   },
   {
-    id: 4,
+    id: "4",
     nome: "Dra. Maria Silva",
     nicho: "Saúde",
     instagram: "@consultoriamedica",
@@ -62,7 +62,7 @@ export const opportunities: Opportunity[] = [
     created_at: "2025-09-16T16:45:00Z"
   },
   {
-    id: 5,
+    id: "5",
     nome: "Roberto Costa",
     nicho: "Tecnologia",
     instagram: "@devtech_solutions",
@@ -74,7 +74,7 @@ export const opportunities: Opportunity[] = [
     created_at: "2025-09-16T14:20:00Z"
   },
   {
-    id: 6,
+    id: "6",
     nome: "Ana Paula Oliveira",
     nicho: "Consultoria",
     instagram: "@consultoriarh_pro",

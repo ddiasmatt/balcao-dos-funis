@@ -1,5 +1,5 @@
-import { useState, useMemo } from 'react';
-import { Search, Filter, Flame, LogOut, User, Plus } from 'lucide-react';
+import { useState, useMemo, useEffect } from 'react';
+import { Search, Filter, Flame, LogOut, User, Plus, Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -7,7 +7,21 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { OpportunityCard } from '@/components/OpportunityCard';
 import { OpportunityModal } from '@/components/OpportunityModal';
 import { useAuth } from '@/contexts/AuthContext';
-import { opportunities, nichos, Opportunity } from '@/lib/data';
+import { supabase } from '@/integrations/supabase/client';
+import { getTimeAgo } from '@/lib/data';
+
+interface Opportunity {
+  id: string;
+  nome: string;
+  nicho: string;
+  instagram: string;
+  whatsapp: string;
+  email: string;
+  faturamento: string;
+  como_ajudar: string;
+  por_que_escolher: string;
+  created_at: string;
+}
 
 const Dashboard = () => {
   const { user, logout } = useAuth();
@@ -16,6 +30,40 @@ const Dashboard = () => {
   const [selectedNicho, setSelectedNicho] = useState('Todos');
   const [selectedOpportunity, setSelectedOpportunity] = useState<Opportunity | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [opportunities, setOpportunities] = useState<Opportunity[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [nichos, setNichos] = useState<string[]>(['Todos']);
+
+  // Fetch opportunities from Supabase
+  useEffect(() => {
+    const fetchOpportunities = async () => {
+      try {
+        setLoading(true);
+        const { data, error } = await supabase
+          .from('opportunities')
+          .select('*')
+          .order('created_at', { ascending: false });
+
+        if (error) {
+          console.error('Error fetching opportunities:', error);
+          return;
+        }
+
+        if (data) {
+          setOpportunities(data);
+          // Extract unique nichos from the data
+          const uniqueNichos = ['Todos', ...new Set(data.map(item => item.nicho))];
+          setNichos(uniqueNichos);
+        }
+      } catch (error) {
+        console.error('Error fetching opportunities:', error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchOpportunities();
+  }, []);
 
   // Filtrar oportunidades
   const filteredOpportunities = useMemo(() => {
@@ -130,7 +178,11 @@ const Dashboard = () => {
         </div>
 
         {/* Grid de oportunidades */}
-        {filteredOpportunities.length > 0 ? (
+        {loading ? (
+          <div className="flex justify-center items-center py-16">
+            <Loader2 className="animate-spin text-primary" size={48} />
+          </div>
+        ) : filteredOpportunities.length > 0 ? (
           <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
             {filteredOpportunities.map((opportunity) => (
               <OpportunityCard
