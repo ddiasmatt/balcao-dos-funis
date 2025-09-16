@@ -28,11 +28,7 @@ const AppRoutes = () => {
           <Dashboard />
         </ProtectedRoute>
       } />
-      <Route path="/aplicar" element={
-        <ProtectedRoute>
-          <Application />
-        </ProtectedRoute>
-      } />
+      <Route path="/aplicar" element={<Application />} />
       {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
       <Route path="*" element={<NotFound />} />
     </Routes>

@@ -7,9 +7,7 @@ import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Form, FormControl, FormField, FormItem, FormLabel, FormMessage } from '@/components/ui/form';
-import { Stepper } from '@/components/Stepper';
-import { Flame, ArrowLeft, ArrowRight, Send, Loader2 } from 'lucide-react';
-import { useAuth } from '@/contexts/AuthContext';
+import { Flame, ArrowLeft, Send, Loader2 } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
@@ -18,7 +16,7 @@ import { nichos } from '@/lib/data';
 const applicationSchema = z.object({
   nome: z.string().min(2, 'Nome deve ter pelo menos 2 caracteres'),
   nicho: z.string().min(1, 'Selecione um nicho'),
-  instagram: z.string().min(1, 'Instagram é obrigatório').regex(/^@/, 'Instagram deve começar com @'),
+  instagram: z.string().min(1, 'Instagram é obrigatório'),
   whatsapp: z.string().min(1, 'WhatsApp é obrigatório'),
   email: z.string().email('Email inválido'),
   faturamento: z.string().min(1, 'Faturamento é obrigatório'),
@@ -28,13 +26,9 @@ const applicationSchema = z.object({
 
 type ApplicationFormData = z.infer<typeof applicationSchema>;
 
-const steps = ['Básico', 'Contato', 'Negócio', 'Projeto'];
-
 const Application = () => {
-  const { user } = useAuth();
   const navigate = useNavigate();
   const { toast } = useToast();
-  const [currentStep, setCurrentStep] = useState(0);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const form = useForm<ApplicationFormData>({
@@ -53,38 +47,13 @@ const Application = () => {
 
   const filteredNichos = nichos.filter(nicho => nicho !== 'Todos');
 
-  const nextStep = async () => {
-    const fieldsToValidate = getFieldsForStep(currentStep);
-    const isValid = await form.trigger(fieldsToValidate);
-    
-    if (isValid) {
-      setCurrentStep((prev) => Math.min(prev + 1, steps.length - 1));
-    }
-  };
-
-  const prevStep = () => {
-    setCurrentStep((prev) => Math.max(prev - 1, 0));
-  };
-
-  const getFieldsForStep = (step: number): (keyof ApplicationFormData)[] => {
-    switch (step) {
-      case 0: return ['nome', 'nicho'];
-      case 1: return ['instagram', 'whatsapp', 'email'];
-      case 2: return ['faturamento'];
-      case 3: return ['como_ajudar', 'por_que_escolher'];
-      default: return [];
-    }
-  };
-
   const onSubmit = async (data: ApplicationFormData) => {
-    if (!user) return;
-
     setIsSubmitting(true);
     try {
       const { error } = await supabase
         .from('opportunities')
         .insert({
-          user_id: user,
+          user_id: data.email, // Usar email como identificador já que não há auth
           ...data,
         });
 
@@ -92,10 +61,11 @@ const Application = () => {
 
       toast({
         title: "Aplicação enviada com sucesso!",
-        description: "Em breve entraremos em contato.",
+        description: "Em breve entraremos em contato através do email informado.",
       });
 
-      navigate('/dashboard');
+      // Limpar formulário após sucesso
+      form.reset();
     } catch (error) {
       console.error('Erro ao enviar aplicação:', error);
       toast({
@@ -105,160 +75,6 @@ const Application = () => {
       });
     } finally {
       setIsSubmitting(false);
-    }
-  };
-
-  const renderStepContent = () => {
-    switch (currentStep) {
-      case 0:
-        return (
-          <div className="space-y-6">
-            <FormField
-              control={form.control}
-              name="nome"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Nome completo</FormLabel>
-                  <FormControl>
-                    <Input placeholder="Seu nome completo" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="nicho"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Nicho</FormLabel>
-                  <Select onValueChange={field.onChange} value={field.value}>
-                    <FormControl>
-                      <SelectTrigger>
-                        <SelectValue placeholder="Selecione seu nicho" />
-                      </SelectTrigger>
-                    </FormControl>
-                    <SelectContent>
-                      {filteredNichos.map((nicho) => (
-                        <SelectItem key={nicho} value={nicho}>
-                          {nicho}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-        );
-
-      case 1:
-        return (
-          <div className="space-y-6">
-            <FormField
-              control={form.control}
-              name="instagram"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Instagram</FormLabel>
-                  <FormControl>
-                    <Input placeholder="@seuinstagram" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="whatsapp"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>WhatsApp</FormLabel>
-                  <FormControl>
-                    <Input placeholder="+55 11 99999-9999" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="email"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Email</FormLabel>
-                  <FormControl>
-                    <Input type="email" placeholder="seu@email.com" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-        );
-
-      case 2:
-        return (
-          <div className="space-y-6">
-            <FormField
-              control={form.control}
-              name="faturamento"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Faturamento mensal atual</FormLabel>
-                  <FormControl>
-                    <Input placeholder="R$ 50.000,00" {...field} />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-        );
-
-      case 3:
-        return (
-          <div className="space-y-6">
-            <FormField
-              control={form.control}
-              name="como_ajudar"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Como podemos ajudar?</FormLabel>
-                  <FormControl>
-                    <Textarea 
-                      placeholder="Descreva detalhadamente como podemos ajudar seu negócio..."
-                      className="min-h-32"
-                      {...field} 
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="por_que_escolher"
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Por que escolher este projeto?</FormLabel>
-                  <FormControl>
-                    <Textarea 
-                      placeholder="Explique por que devemos escolher trabalhar com você..."
-                      className="min-h-32"
-                      {...field} 
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-          </div>
-        );
-
-      default:
-        return null;
     }
   };
 
@@ -272,13 +88,13 @@ const Application = () => {
               <Flame size={24} className="text-primary-foreground" />
             </div>
             <div>
-              <h1 className="text-xl font-bold text-foreground">APLICAÇÃO</h1>
+              <h1 className="text-xl font-bold text-foreground">APLICAÇÃO PARA CONTRATANTES</h1>
               <p className="text-sm text-primary font-semibold">BALCÃO DOS FUNIS</p>
             </div>
           </div>
           <Button
             variant="ghost"
-            onClick={() => navigate('/dashboard')}
+            onClick={() => navigate('/')}
             className="text-muted-foreground hover:text-foreground"
           >
             <ArrowLeft size={16} className="mr-2" />
@@ -288,60 +104,195 @@ const Application = () => {
       </header>
 
       {/* Main Content */}
-      <main className="container mx-auto px-4 py-8 max-w-2xl">
-        {/* Stepper */}
-        <Stepper steps={steps} currentStep={currentStep} />
-
-        {/* Form */}
-        <div className="bg-white rounded-lg shadow-sm border border-border p-8 mt-8">
-          <div className="mb-6">
-            <h2 className="text-2xl font-bold text-foreground mb-2">
-              {currentStep === 0 && "Informações Básicas"}
-              {currentStep === 1 && "Redes Sociais & Contato"}
-              {currentStep === 2 && "Informações do Negócio"}
-              {currentStep === 3 && "Detalhes do Projeto"}
+      <main className="container mx-auto px-4 py-8 max-w-4xl">
+        <div className="bg-white rounded-lg shadow-sm border border-border p-8">
+          <div className="mb-8 text-center">
+            <h2 className="text-3xl font-bold text-foreground mb-4">
+              Solicite uma Parceria
             </h2>
-            <p className="text-muted-foreground">
-              Passo {currentStep + 1} de {steps.length}
+            <p className="text-muted-foreground text-lg">
+              Preencha o formulário abaixo para que possamos avaliar sua oportunidade de negócio.
             </p>
           </div>
 
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-              {renderStepContent()}
-
-              {/* Navigation buttons */}
-              <div className="flex justify-between pt-6">
-                <Button
-                  type="button"
-                  variant="outline"
-                  onClick={prevStep}
-                  disabled={currentStep === 0}
-                >
-                  <ArrowLeft size={16} className="mr-2" />
-                  Anterior
-                </Button>
-
-                {currentStep < steps.length - 1 ? (
-                  <Button type="button" onClick={nextStep}>
-                    Próximo
-                    <ArrowRight size={16} className="ml-2" />
-                  </Button>
-                ) : (
-                  <Button type="submit" disabled={isSubmitting}>
-                    {isSubmitting ? (
-                      <>
-                        <Loader2 size={16} className="mr-2 animate-spin" />
-                        Enviando...
-                      </>
-                    ) : (
-                      <>
-                        <Send size={16} className="mr-2" />
-                        Enviar Aplicação
-                      </>
+            <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+              {/* Informações Básicas */}
+              <div className="space-y-6">
+                <h3 className="text-xl font-semibold text-foreground border-b pb-2">
+                  Informações Básicas
+                </h3>
+                <div className="grid md:grid-cols-2 gap-6">
+                  <FormField
+                    control={form.control}
+                    name="nome"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Nome completo *</FormLabel>
+                        <FormControl>
+                          <Input placeholder="Seu nome completo" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
                     )}
-                  </Button>
-                )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="nicho"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Nicho *</FormLabel>
+                        <Select onValueChange={field.onChange} value={field.value}>
+                          <FormControl>
+                            <SelectTrigger>
+                              <SelectValue placeholder="Selecione seu nicho" />
+                            </SelectTrigger>
+                          </FormControl>
+                          <SelectContent>
+                            {filteredNichos.map((nicho) => (
+                              <SelectItem key={nicho} value={nicho}>
+                                {nicho}
+                              </SelectItem>
+                            ))}
+                          </SelectContent>
+                        </Select>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
+
+              {/* Informações de Contato */}
+              <div className="space-y-6">
+                <h3 className="text-xl font-semibold text-foreground border-b pb-2">
+                  Informações de Contato
+                </h3>
+                <div className="grid md:grid-cols-3 gap-6">
+                  <FormField
+                    control={form.control}
+                    name="email"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Email *</FormLabel>
+                        <FormControl>
+                          <Input type="email" placeholder="seu@email.com" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="whatsapp"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>WhatsApp *</FormLabel>
+                        <FormControl>
+                          <Input placeholder="+55 11 99999-9999" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="instagram"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Instagram *</FormLabel>
+                        <FormControl>
+                          <Input placeholder="@seuinstagram" {...field} />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
+
+              {/* Informações do Negócio */}
+              <div className="space-y-6">
+                <h3 className="text-xl font-semibold text-foreground border-b pb-2">
+                  Informações do Negócio
+                </h3>
+                <FormField
+                  control={form.control}
+                  name="faturamento"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Faturamento mensal atual *</FormLabel>
+                      <FormControl>
+                        <Input placeholder="Ex: R$ 50.000,00" {...field} />
+                      </FormControl>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
+              </div>
+
+              {/* Detalhes do Projeto */}
+              <div className="space-y-6">
+                <h3 className="text-xl font-semibold text-foreground border-b pb-2">
+                  Detalhes do Projeto
+                </h3>
+                <div className="grid md:grid-cols-2 gap-6">
+                  <FormField
+                    control={form.control}
+                    name="como_ajudar"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Como podemos ajudar? *</FormLabel>
+                        <FormControl>
+                          <Textarea 
+                            placeholder="Descreva detalhadamente como podemos ajudar seu negócio..."
+                            className="min-h-32"
+                            {...field} 
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                  <FormField
+                    control={form.control}
+                    name="por_que_escolher"
+                    render={({ field }) => (
+                      <FormItem>
+                        <FormLabel>Por que escolher este projeto? *</FormLabel>
+                        <FormControl>
+                          <Textarea 
+                            placeholder="Explique por que devemos escolher trabalhar com você..."
+                            className="min-h-32"
+                            {...field} 
+                          />
+                        </FormControl>
+                        <FormMessage />
+                      </FormItem>
+                    )}
+                  />
+                </div>
+              </div>
+
+              {/* Botão de envio */}
+              <div className="pt-6 text-center">
+                <Button 
+                  type="submit" 
+                  disabled={isSubmitting}
+                  className="px-12 py-3 text-lg"
+                >
+                  {isSubmitting ? (
+                    <>
+                      <Loader2 size={20} className="mr-2 animate-spin" />
+                      Enviando Aplicação...
+                    </>
+                  ) : (
+                    <>
+                      <Send size={20} className="mr-2" />
+                      Enviar Aplicação
+                    </>
+                  )}
+                </Button>
               </div>
             </form>
           </Form>

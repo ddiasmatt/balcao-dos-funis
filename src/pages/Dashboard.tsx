@@ -82,19 +82,10 @@ const Dashboard = () => {
 
       {/* Área principal */}
       <main className="container mx-auto px-4 py-8">
-        {/* Header com botão de aplicar */}
-        <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-          <div>
-            <h2 className="text-2xl font-bold text-foreground">Oportunidades</h2>
-            <p className="text-muted-foreground">Explore as oportunidades disponíveis</p>
-          </div>
-          <Button
-            onClick={() => navigate('/aplicar')}
-            className="bg-primary hover:bg-primary/90 text-primary-foreground"
-          >
-            <Plus size={16} className="mr-2" />
-            Nova Aplicação
-          </Button>
+        {/* Header */}
+        <div className="mb-8">
+          <h2 className="text-2xl font-bold text-foreground">Oportunidades</h2>
+          <p className="text-muted-foreground">Explore as oportunidades disponíveis</p>
         </div>
 
         {/* Barra de busca e filtros */}
