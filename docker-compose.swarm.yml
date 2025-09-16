@@ -4,7 +4,7 @@ services:
   balcao-dos-funis:
     image: ghcr.io/ddiasmatt/balcao-dos-funis:main
     networks:
-      - traefik
+      - traefik_traefik
     deploy:
       replicas: 1
       restart_policy:
@@ -46,5 +46,5 @@ services:
         - "traefik.http.routers.balcao-secure.middlewares=secure-headers"
 
 networks:
-  traefik:
+  traefik_traefik:
     external: true
