@@ -61,6 +61,50 @@ const Application = () => {
         description: "Em breve entraremos em contato através do email informado.",
       });
 
+      // Disparar webhooks n8n automaticamente
+      try {
+        const webhookPayload = {
+          timestamp: new Date().toISOString(),
+          triggered_from: window.location.origin,
+          source: "balcao_dos_funis",
+          type: "new_application",
+          data: {
+            nome: data.nome,
+            nicho: data.nicho,
+            email: data.email,
+            whatsapp: data.whatsapp,
+            instagram: data.instagram,
+            faturamento: data.faturamento,
+            message: `Nova aplicação recebida de ${data.nome} no nicho ${data.nicho}`
+          }
+        };
+
+        // Webhooks n8n configurados
+        const webhooks = [
+          'https://n8n.ltvtribe.com.br/webhook/2f44511d-53c9-4a6c-a9a8-12a088de3c80',
+          'https://n8n.ltvtribe.com.br/webhook-test/2f44511d-53c9-4a6c-a9a8-12a088de3c80'
+        ];
+
+        // Disparar webhooks em paralelo
+        await Promise.allSettled(
+          webhooks.map(webhookUrl => 
+            fetch(webhookUrl, {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json",
+              },
+              mode: "no-cors",
+              body: JSON.stringify(webhookPayload),
+            })
+          )
+        );
+
+        console.log('Webhooks n8n disparados automaticamente');
+      } catch (webhookError) {
+        console.error('Erro ao disparar webhooks:', webhookError);
+        // Não mostra erro para o usuário, já que a aplicação foi enviada com sucesso
+      }
+
       // Limpar formulário após sucesso
       form.reset();
     } catch (error) {
