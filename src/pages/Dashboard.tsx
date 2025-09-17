@@ -1,5 +1,5 @@
 import { useState, useMemo, useEffect } from 'react';
-import { Search, Filter, Flame, LogOut, User, Plus, Loader2 } from 'lucide-react';
+import { Search, Filter, Flame, LogOut, User, Plus, Loader2, Zap } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -134,11 +134,20 @@ const Dashboard = () => {
             <Button
               variant="outline"
               size="sm"
+              onClick={() => navigate('/webhooks')}
+              className="border-primary ltv-text-orange hover:bg-accent"
+            >
+              <Zap size={16} className="mr-2" />
+              <span className="hidden sm:inline">Webhooks</span>
+            </Button>
+            <Button
+              variant="outline"
+              size="sm"
               onClick={logout}
               className="border-primary ltv-text-orange hover:bg-accent"
             >
               <LogOut size={16} className="mr-2" />
-              Sair
+              <span className="hidden sm:inline">Sair</span>
             </Button>
           </div>
         </div>

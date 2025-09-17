@@ -9,6 +9,7 @@ import Home from "./pages/Home";
 import Login from "./pages/Login";
 import Dashboard from "./pages/Dashboard";
 import Application from "./pages/Application";
+import Webhooks from "./pages/Webhooks";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -24,6 +25,11 @@ const AppRoutes = () => {
         </ProtectedRoute>
       } />
       <Route path="/aplicar" element={<Application />} />
+      <Route path="/webhooks" element={
+        <ProtectedRoute>
+          <Webhooks />
+        </ProtectedRoute>
+      } />
       {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
       <Route path="*" element={<NotFound />} />
     </Routes>
