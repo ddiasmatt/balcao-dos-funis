@@ -71,7 +71,7 @@ export type Database = {
     }
     Functions: {
       get_public_opportunities: {
-        Args: Record<PropertyKey, never>
+        Args: never
         Returns: {
           como_ajudar: string
           contact_message: string
