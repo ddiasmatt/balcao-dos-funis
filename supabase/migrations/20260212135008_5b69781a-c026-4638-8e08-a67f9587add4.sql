@@ -1,0 +1,1 @@
+DELETE FROM balcao_opportunities WHERE id = 'd059e6a9-ffee-4da7-9745-d2df1dee87d1';
