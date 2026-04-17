@@ -1,73 +1,55 @@
-# Welcome to your Lovable project
+# Balcão dos Funis
 
-## Project info
+Marketplace interno de oportunidades (projetos, vagas e freelas) para alunos das comunidades **Método LTV**, **CAIA** e **AI Society**.
 
-**URL**: https://lovable.dev/projects/2903298a-e2f9-4b83-8a6c-0d4944df393e
+## Stack
 
-## How can I edit this code?
+- React 18 + Vite 7 + TypeScript
+- Tailwind CSS 3 + shadcn/ui (tema OKLCH dark)
+- TanStack Query 5, React Router 7, GSAP 3
+- Supabase Auth (magic link, SMTP via Resend)
+- Backend: Sigma API (`https://api-sigma.vuker.com.br`)
+- Deploy: Vercel (Git Integration)
 
-There are several ways of editing your application.
+## Arquitetura
 
-**Use Lovable**
+- Frontend consome a Sigma API (FastAPI) em `/api/balcao/*`.
+- Supabase JS é usado **apenas para auth** (magic link + session). Nenhum CRUD direto no banco.
+- Alunos elegíveis = `prospects_subscriptions.status='active'` em produtos listados em `BALCAO_ALLOWED_PRODUCT_IDS` no backend.
+- Contratantes publicam aberto (rate-limited 5/hora por IP + honeypot).
+- Handshake de interesse: aluno → backend cria `balcao_interests` + Resend dispara email ao contratante com contato do aluno.
 
-Simply visit the [Lovable Project](https://lovable.dev/projects/2903298a-e2f9-4b83-8a6c-0d4944df393e) and start prompting.
+## Rotas
 
-Changes made via Lovable will be committed automatically to this repo.
+| Path | Acesso | Descrição |
+|------|--------|-----------|
+| `/` | público | Landing |
+| `/publicar` | público | Form do contratante |
+| `/publicar/sucesso` | público | Confirmação |
+| `/login` | público | Magic link request |
+| `/auth/callback` | público | Supabase session exchange |
+| `/oportunidades` | aluno | Listagem paginada |
+| `/oportunidades/:id` | aluno | Detalhe + "Tenho interesse" |
+| `/sair` | qualquer | Logout |
 
-**Use your preferred IDE**
+## Desenvolvimento
 
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+```bash
+npm install
+cp .env.example .env   # e preencha VITE_SUPABASE_ANON_KEY real
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+Pré-requisito: Sigma API rodando em `http://localhost:8000` (ou ajuste `VITE_SIGMA_API_URL`).
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+## Deploy
 
-**Use GitHub Codespaces**
+Git push na `main` → Vercel builda e publica automaticamente.
+Domínio produção: `app.ltvtribe.com.br` (CNAME → Vercel).
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+## Env vars (Vercel)
 
-## What technologies are used for this project?
-
-This project is built with:
-
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
-
-## How can I deploy this project?
-
-Simply open [Lovable](https://lovable.dev/projects/2903298a-e2f9-4b83-8a6c-0d4944df393e) and click on Share -> Publish.
-
-## Can I connect a custom domain to my Lovable project?
-
-Yes, you can!
-
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
-
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+- `VITE_SIGMA_API_URL` — URL pública da Sigma API (`https://api-sigma.vuker.com.br`)
+- `VITE_SUPABASE_URL` — `https://db-sigma.vuker.com.br`
+- `VITE_SUPABASE_ANON_KEY` — anon key do stack `sigma-supa`
+- `VITE_BALCAO_NAME` — `Balcão dos Funis`
