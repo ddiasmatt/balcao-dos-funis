@@ -1,6 +1,8 @@
 import { supabase } from "./supabase";
 
-const API_URL = (import.meta.env.VITE_SIGMA_API_URL || "http://localhost:8000").replace(/\/$/, "");
+// API vive no mesmo domínio (Vercel Functions em /api/). Configurável só pra dev local
+// caso queira apontar pra uma instância remota.
+const API_URL = (import.meta.env.VITE_API_BASE_URL ?? "").replace(/\/$/, "");
 
 async function authHeader(): Promise<Record<string, string>> {
   const { data } = await supabase.auth.getSession();
