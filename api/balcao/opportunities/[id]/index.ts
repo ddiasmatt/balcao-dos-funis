@@ -11,12 +11,16 @@ export default route(["GET"], async (req, res) => {
   const { data, error } = await supa
     .from("balcao_opportunities")
     .select(
-      "id,created_at,updated_at,expires_at,nome,nicho,nicho_slug,instagram,faturamento,como_ajudar,por_que_escolher,public_contact_method,show_full_contact,contact_message",
+      "id,created_at,updated_at,expires_at,closed_at,nome,nicho,nicho_slug,instagram,faturamento,como_ajudar,por_que_escolher,public_contact_method,show_full_contact,contact_message",
     )
     .eq("id", id)
     .limit(1);
 
   if (error) return res.status(500).json({ detail: error.message });
   if (!data || data.length === 0) return res.status(404).json({ detail: "Oportunidade não encontrada" });
+
+  const opp = data[0] as { closed_at: string | null };
+  if (opp.closed_at) return res.status(410).json({ detail: "Esta oportunidade foi fechada pelo contratante." });
+
   res.status(200).json(data[0]);
 });

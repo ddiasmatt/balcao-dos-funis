@@ -95,6 +95,21 @@ export interface Me {
   subscription_product_id: number;
 }
 
+export interface OpportunityContact {
+  email: string | null;
+  whatsapp: string | null;
+  instagram: string | null;
+  contact_message: string | null;
+  public_contact_method: string | null;
+}
+
+export interface InterestResponse {
+  ok: boolean;
+  contact: OpportunityContact;
+  already_registered: boolean;
+  interest_id?: string | null;
+}
+
 // ─── Endpoints ──────────────────────────────────────────────────────────────
 
 export const api = {
@@ -120,6 +135,6 @@ export const api = {
   submitOpportunity: (payload: Record<string, unknown>) =>
     apiPost<{ ok: boolean; id?: string }>("/api/balcao/opportunities", payload, { auth: false }),
 
-  registerInterest: (id: string, message?: string) =>
-    apiPost<{ ok: boolean; interest_id?: string }>(`/api/balcao/opportunities/${id}/interest`, { message }),
+  revealOpportunityContact: (id: string) =>
+    apiPost<InterestResponse>(`/api/balcao/opportunities/${id}/interest`, {}),
 };
