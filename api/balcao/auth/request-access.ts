@@ -1,10 +1,10 @@
 import { z } from "zod";
-import { route, clientIpFromReq } from "../../_lib/vercel";
-import { findActiveSubscription, findProspectByEmail, type Prospect } from "../../_lib/auth";
-import { sendNoActiveSubscription } from "../../_lib/emails";
-import { sendMagicLink } from "../../_lib/magic-link";
-import { checkRateLimit } from "../../_lib/rate-limit";
-import { defaultOrgId, supabaseAdmin } from "../../_lib/supabase";
+import { route, clientIpFromReq } from "../../_lib/vercel.js";
+import { findActiveSubscription, findProspectByEmail, type Prospect } from "../../_lib/auth.js";
+import { sendNoActiveSubscription } from "../../_lib/emails.js";
+import { sendMagicLink } from "../../_lib/magic-link.js";
+import { checkRateLimit } from "../../_lib/rate-limit.js";
+import { defaultOrgId, supabaseAdmin } from "../../_lib/supabase.js";
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 

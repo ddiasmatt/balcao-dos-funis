@@ -1,9 +1,9 @@
 import { z } from "zod";
-import { route, getAuthHeader, clientIpFromReq } from "../../_lib/vercel";
-import { requireStudent } from "../../_lib/auth";
-import { checkRateLimit } from "../../_lib/rate-limit";
-import { supabaseAdmin } from "../../_lib/supabase";
-import { sendSubmissionConfirmation } from "../../_lib/emails";
+import { route, getAuthHeader, clientIpFromReq } from "../../_lib/vercel.js";
+import { requireStudent } from "../../_lib/auth.js";
+import { checkRateLimit } from "../../_lib/rate-limit.js";
+import { supabaseAdmin } from "../../_lib/supabase.js";
+import { sendSubmissionConfirmation } from "../../_lib/emails.js";
 
 const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 

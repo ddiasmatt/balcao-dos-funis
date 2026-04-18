@@ -1,4 +1,4 @@
-import { allowedProductIds, supabaseAdmin, supabaseAnonHeaders, supabaseUrl } from "./supabase";
+import { allowedProductIds, supabaseAdmin, supabaseAnonHeaders, supabaseUrl } from "./supabase.js";
 
 export interface AuthUser {
   user_id: string;

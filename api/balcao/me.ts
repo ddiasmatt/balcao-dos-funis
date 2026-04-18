@@ -1,5 +1,5 @@
-import { route, getAuthHeader } from "../_lib/vercel";
-import { requireStudent } from "../_lib/auth";
+import { route, getAuthHeader } from "../_lib/vercel.js";
+import { requireStudent } from "../_lib/auth.js";
 
 export default route(["GET"], async (req, res) => {
   const { user, prospect, subscription } = await requireStudent(getAuthHeader(req));

@@ -1,5 +1,5 @@
-import { route } from "../_lib/vercel";
-import { supabaseAdmin } from "../_lib/supabase";
+import { route } from "../_lib/vercel.js";
+import { supabaseAdmin } from "../_lib/supabase.js";
 
 export default route(["GET"], async (_req, res) => {
   const supa = supabaseAdmin();

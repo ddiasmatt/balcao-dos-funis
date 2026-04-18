@@ -1,6 +1,6 @@
-import { route, getAuthHeader } from "../../../_lib/vercel";
-import { requireStudent } from "../../../_lib/auth";
-import { supabaseAdmin } from "../../../_lib/supabase";
+import { route, getAuthHeader } from "../../../_lib/vercel.js";
+import { requireStudent } from "../../../_lib/auth.js";
+import { supabaseAdmin } from "../../../_lib/supabase.js";
 
 export default route(["GET"], async (req, res) => {
   await requireStudent(getAuthHeader(req));

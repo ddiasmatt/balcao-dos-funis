@@ -1,8 +1,8 @@
 import { z } from "zod";
-import { route, getAuthHeader } from "../../../_lib/vercel";
-import { requireStudent } from "../../../_lib/auth";
-import { sendInterestToContractor, sendInterestToStudent } from "../../../_lib/emails";
-import { supabaseAdmin } from "../../../_lib/supabase";
+import { route, getAuthHeader } from "../../../_lib/vercel.js";
+import { requireStudent } from "../../../_lib/auth.js";
+import { sendInterestToContractor, sendInterestToStudent } from "../../../_lib/emails.js";
+import { supabaseAdmin } from "../../../_lib/supabase.js";
 
 const bodySchema = z.object({
   message: z.string().trim().max(1000).optional(),

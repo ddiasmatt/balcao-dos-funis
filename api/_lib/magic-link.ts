@@ -1,5 +1,5 @@
-import { supabaseAdmin } from "./supabase";
-import { sendMagicLinkEmail } from "./emails";
+import { supabaseAdmin } from "./supabase.js";
+import { sendMagicLinkEmail } from "./emails.js";
 
 /**
  * Gera link de magic link via Supabase Admin API e dispara email branded pelo Resend.
