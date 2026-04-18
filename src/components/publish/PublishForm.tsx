@@ -1,7 +1,7 @@
 import { useQuery } from "@tanstack/react-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
-import { useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { z } from "zod";
 
@@ -31,8 +31,7 @@ export function PublishForm({ onSuccess }: { onSuccess: () => void }) {
   const {
     register,
     handleSubmit,
-    setValue,
-    watch,
+    control,
     formState: { errors, isSubmitting },
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
@@ -79,22 +78,28 @@ export function PublishForm({ onSuccess }: { onSuccess: () => void }) {
       </div>
 
       <Field label="Nicho do projeto" error={errors.nicho_slug?.message}>
-        <Select
-          value={watch("nicho_slug") || undefined}
-          onValueChange={(v) => setValue("nicho_slug", v, { shouldValidate: true })}
-          disabled={niching}
-        >
-          <SelectTrigger>
-            <SelectValue placeholder="Escolha um nicho" />
-          </SelectTrigger>
-          <SelectContent>
-            {niches?.map((n) => (
-              <SelectItem key={n.slug} value={n.slug}>
-                {n.label}
-              </SelectItem>
-            ))}
-          </SelectContent>
-        </Select>
+        <Controller
+          name="nicho_slug"
+          control={control}
+          render={({ field }) => (
+            <Select
+              value={field.value || undefined}
+              onValueChange={field.onChange}
+              disabled={niching}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder={niching ? "Carregando nichos..." : "Escolha um nicho"} />
+              </SelectTrigger>
+              <SelectContent>
+                {niches?.map((n) => (
+                  <SelectItem key={n.slug} value={n.slug}>
+                    {n.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
+        />
       </Field>
 
       <Field label="Faturamento mensal aproximado" error={errors.faturamento?.message} hint="Ex: R$ 50.000/mês ou 'pré-receita'">
