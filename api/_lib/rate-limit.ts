@@ -1,4 +1,4 @@
-import { supabaseAdmin } from "./supabase";
+import { supabaseAdmin } from "./supabase.js";
 
 /**
  * Rate limit distribuído via RPC Postgres `balcao_check_rate_limit`.
