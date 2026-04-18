@@ -1,6 +1,10 @@
 export function GlowOrbs() {
   return (
-    <>
+    <div
+      aria-hidden
+      className="pointer-events-none fixed inset-0 overflow-hidden"
+      style={{ zIndex: 0 }}
+    >
       <div
         aria-hidden
         className="glow-orb animate-glow-pulse"
@@ -24,10 +28,6 @@ export function GlowOrbs() {
           animationDelay: "3s",
         }}
       />
-      <div
-        aria-hidden
-        className="grid-bg absolute inset-0 -z-10"
-      />
-    </>
+    </div>
   );
 }

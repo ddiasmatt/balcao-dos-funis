@@ -39,6 +39,7 @@ async function handleGet(req: import("@vercel/node").VercelRequest, res: import(
       { count: "exact" },
     )
     .gt("expires_at", nowIso)
+    .is("closed_at", null)
     .range((page - 1) * pageSize, page * pageSize - 1);
 
   if (sort === "faturamento") {

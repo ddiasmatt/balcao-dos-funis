@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 import { Link, useParams } from "react-router-dom";
-import { ArrowLeft, Instagram, MessageCircle } from "lucide-react";
+import { ArrowLeft, Eye, Instagram } from "lucide-react";
 
 import { InterestDialog } from "@/components/opportunity/InterestDialog";
 import { GlowOrbs } from "@/components/layout/GlowOrbs";
@@ -95,10 +95,10 @@ export default function OpportunityDetail() {
                     className="mt-6 w-full gap-2"
                     style={{ background: "var(--sigma)", color: "white" }}
                   >
-                    <MessageCircle size={16} /> Tenho interesse
+                    <Eye size={16} /> Exibir informações
                   </Button>
                   <p className="mt-3 text-xs text-muted-fg">
-                    Enviamos seu contato direto por email. Sem exposição pública.
+                    Liberamos email, WhatsApp e Instagram do contratante. Ele é avisado que você se interessou.
                   </p>
                 </div>
               </aside>
