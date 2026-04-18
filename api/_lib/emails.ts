@@ -1,7 +1,7 @@
 import { Resend } from "resend";
 
-const SENDER = process.env.BALCAO_EMAIL_SENDER ?? "Balcão dos Funis <noreply@sigma.vuker.com.br>";
-const FRONTEND_URL = (process.env.BALCAO_FRONTEND_URL ?? "https://app.ltvtribe.com.br").replace(/\/$/, "");
+const SENDER = process.env.BALCAO_EMAIL_SENDER ?? "Balcão dos Funis <noreply@mail.ltvtribe.com.br>";
+const FRONTEND_URL = (process.env.BALCAO_FRONTEND_URL ?? "https://balcao.ltvtribe.com.br").replace(/\/$/, "");
 
 function resend(): Resend {
   const key = process.env.RESEND_API_KEY;
@@ -66,6 +66,23 @@ async function send(to: string, subject: string, html: string, replyTo?: string)
     console.error("send email failed", err);
     return { id: null, ok: false };
   }
+}
+
+export async function sendMagicLinkEmail(email: string, actionLink: string): Promise<EmailResult> {
+  const safeLink = escapeHtml(actionLink);
+  const body = `
+    <h1 style="margin:0 0 16px 0;font-size:24px;font-weight:600;color:#ffffff;">Seu link de acesso</h1>
+    <p style="margin:0 0 14px 0;">Clique no botão abaixo pra entrar no <strong>Balcão dos Funis</strong>. O link vale por 1 hora.</p>
+    <table role="presentation" width="100%" cellspacing="0" cellpadding="0" style="margin:28px 0;">
+      <tr><td align="center">
+        <a href="${safeLink}" style="display:inline-block;padding:14px 32px;background:#7c6fff;color:#ffffff;text-decoration:none;border-radius:10px;font-weight:600;font-size:15px;">Entrar no Balcão</a>
+      </td></tr>
+    </table>
+    <p style="margin:20px 0 8px 0;color:#a8a8ae;font-size:13px;">Se o botão não funcionar, copie e cole o link abaixo no seu navegador:</p>
+    <p style="margin:0 0 20px 0;font-size:12px;word-break:break-all;"><a href="${safeLink}" style="color:#7c6fff;text-decoration:none;">${safeLink}</a></p>
+    <p style="margin:20px 0 0 0;color:#787880;font-size:12px;">Não pediu esse link? Pode ignorar este email — ele expira em 1 hora e sem ele ninguém consegue entrar.</p>
+  `;
+  return send(email, "Seu link pra entrar no Balcão dos Funis", baseHtml("Seu link de acesso", body));
 }
 
 export async function sendSubmissionConfirmation(email: string, nome: string): Promise<EmailResult> {

@@ -1,9 +1,8 @@
-import { useQuery } from "@tanstack/react-query";
 import { Search } from "lucide-react";
 
 import { Input } from "@/components/ui/input";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { api } from "@/lib/api";
+import { NICHES } from "@/lib/niches";
 
 interface Props {
   nicho?: string;
@@ -16,12 +15,6 @@ interface Props {
 }
 
 export function FilterBar({ nicho, sort, q, onNicho, onSort, onSearchChange, onSearchSubmit }: Props) {
-  const { data: niches } = useQuery({
-    queryKey: ["niches"],
-    queryFn: () => api.niches(),
-    staleTime: 5 * 60_000,
-  });
-
   return (
     <div className="glass flex flex-col gap-3 rounded-2xl p-4 md:flex-row md:items-center">
       <form
@@ -50,7 +43,7 @@ export function FilterBar({ nicho, sort, q, onNicho, onSort, onSearchChange, onS
           </SelectTrigger>
           <SelectContent>
             <SelectItem value="all">Todos os nichos</SelectItem>
-            {niches?.map((n) => (
+            {NICHES.map((n) => (
               <SelectItem key={n.slug} value={n.slug}>
                 {n.label}
               </SelectItem>

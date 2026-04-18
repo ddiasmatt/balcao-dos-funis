@@ -1,4 +1,3 @@
-import { useQuery } from "@tanstack/react-query";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { Loader2 } from "lucide-react";
 import { Controller, useForm } from "react-hook-form";
@@ -11,6 +10,7 @@ import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
 import { api, ApiError } from "@/lib/api";
+import { NICHES } from "@/lib/niches";
 
 const schema = z.object({
   nome: z.string().trim().min(2, "Mínimo 2 caracteres").max(200),
@@ -36,12 +36,6 @@ export function PublishForm({ onSuccess }: { onSuccess: () => void }) {
   } = useForm<FormValues>({
     resolver: zodResolver(schema),
     defaultValues: { website: "" },
-  });
-
-  const { data: niches, isLoading: niching } = useQuery({
-    queryKey: ["niches"],
-    queryFn: () => api.niches(),
-    staleTime: 10 * 60_000,
   });
 
   const onSubmit = async (values: FormValues) => {
@@ -85,13 +79,12 @@ export function PublishForm({ onSuccess }: { onSuccess: () => void }) {
             <Select
               value={field.value || undefined}
               onValueChange={field.onChange}
-              disabled={niching}
             >
               <SelectTrigger>
-                <SelectValue placeholder={niching ? "Carregando nichos..." : "Escolha um nicho"} />
+                <SelectValue placeholder="Escolha um nicho" />
               </SelectTrigger>
               <SelectContent>
-                {niches?.map((n) => (
+                {NICHES.map((n) => (
                   <SelectItem key={n.slug} value={n.slug}>
                     {n.label}
                   </SelectItem>
