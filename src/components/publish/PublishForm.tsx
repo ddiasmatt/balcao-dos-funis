@@ -80,7 +80,7 @@ export function PublishForm({ onSuccess }: { onSuccess: () => void }) {
 
       <Field label="Nicho do projeto" error={errors.nicho_slug?.message}>
         <Select
-          value={watch("nicho_slug") ?? ""}
+          value={watch("nicho_slug") || undefined}
           onValueChange={(v) => setValue("nicho_slug", v, { shouldValidate: true })}
           disabled={niching}
         >
